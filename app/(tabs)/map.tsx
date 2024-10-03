@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from 'expo-location';
+import { useEventList } from "@/api/events";
 
 export default function FiestaMap() {
 
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+    const { data, isLoading, error } = useEventList()
 
     useEffect(() => {
         (async () => {
@@ -32,6 +35,22 @@ export default function FiestaMap() {
         text = `Lat: ${location.coords.latitude}, Lon: ${location.coords.longitude}`;
     }
 
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator />
+            </View>
+        )
+    }
+
+    if (error) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Error al cargar</Text>
+            </View>
+        )
+    }
+
     return (
         <View style={styles.container}>
             {location ? (
@@ -44,7 +63,14 @@ export default function FiestaMap() {
                         longitudeDelta: 0.005,
                     }}
                     showsUserLocation={true}
-                />
+                >
+                    {data && data.map((event: any) => {
+                        const [latitude, longitude] = event.position.coordinates
+                        return (
+                            <Marker key={event.id} coordinate={{ latitude, longitude }} title={event.name} />
+                        )
+                    })}
+                </MapView>
             ) : (
                 <Text>Waiting for location...</Text>
             )}
