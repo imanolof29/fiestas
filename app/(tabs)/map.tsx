@@ -3,6 +3,9 @@ import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from 'expo-location';
 import { useEventList } from "@/api/events";
+import MapSearchBar from "@/components/MapSearchBar";
+import FilterButton from "@/components/FilterButton";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function FiestaMap() {
 
@@ -54,23 +57,31 @@ export default function FiestaMap() {
     return (
         <View style={styles.container}>
             {location ? (
-                <MapView
-                    style={styles.map}
-                    initialRegion={{
-                        latitude: location.coords.latitude,
-                        longitude: location.coords.longitude,
-                        latitudeDelta: 0.005,
-                        longitudeDelta: 0.005,
-                    }}
-                    showsUserLocation={true}
-                >
-                    {data && data.map((event: any) => {
-                        const [latitude, longitude] = event.position.coordinates
-                        return (
-                            <Marker key={event.id} coordinate={{ latitude, longitude }} title={event.name} />
-                        )
-                    })}
-                </MapView>
+                <View>
+                    <MapView
+                        style={styles.map}
+                        initialRegion={{
+                            latitude: location.coords.latitude,
+                            longitude: location.coords.longitude,
+                            latitudeDelta: 0.005,
+                            longitudeDelta: 0.005,
+                        }}
+                        showsUserLocation={true}
+                    >
+                        {data && data.map((event: any) => {
+                            const [latitude, longitude] = event.position.coordinates
+                            return (
+                                <Marker key={event.id} coordinate={{ latitude, longitude }} title={event.name}>
+                                    <Ionicons style={{ color: 'red' }} size={40} name="location" />
+                                </Marker>
+                            )
+                        })}
+                    </MapView>
+                    <View style={{ position: 'absolute', top: 50, left: 20, right: 20, flexDirection: 'row', gap: 10 }}>
+                        <MapSearchBar />
+                        <FilterButton onPress={() => { }} />
+                    </View>
+                </View>
             ) : (
                 <Text>Waiting for location...</Text>
             )}

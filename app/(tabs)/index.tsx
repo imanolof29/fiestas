@@ -1,4 +1,5 @@
 import { useEventList } from '@/api/events';
+import EventCard from '@/components/EventCard';
 import { Link } from 'expo-router';
 import { StyleSheet, FlatList, ActivityIndicator, Text, View, SafeAreaView } from 'react-native';
 
@@ -33,7 +34,7 @@ export default function HomeScreen() {
   return (
     <>
       <SafeAreaView />
-      <FlatList data={data} renderItem={renderItem} />
+      <FlatList data={data} renderItem={({ item }: { item: any }) => <EventCard event={item} />} />
     </>
   );
 }
