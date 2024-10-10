@@ -16,7 +16,6 @@ export const useEventList = () => {
 }
 
 export const useEventDetail = (id: string) => {
-    console.log(id)
     return useQuery({
         queryKey: ['eventDetail', id],
         queryFn: async () => {
