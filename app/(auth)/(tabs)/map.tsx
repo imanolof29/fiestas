@@ -6,13 +6,15 @@ import { useEventList } from "@/api/events";
 import MapSearchBar from "@/components/MapSearchBar";
 import FilterButton from "@/components/FilterButton";
 import { Ionicons } from "@expo/vector-icons";
+import { usePlaceList } from "@/api/places";
+import { PlaceDto } from "@/types/place";
 
 export default function FiestaMap() {
 
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-    const { data, isLoading, error } = useEventList()
+    const { data, isLoading, error } = usePlaceList()
 
     useEffect(() => {
         (async () => {
@@ -68,10 +70,10 @@ export default function FiestaMap() {
                         }}
                         showsUserLocation={true}
                     >
-                        {data && data.map((event: any) => {
-                            const [latitude, longitude] = event.position.coordinates
+                        {data?.data && data.data.map((place: PlaceDto) => {
+                            const [latitude, longitude] = place.position.coordinates
                             return (
-                                <Marker key={event.id} coordinate={{ latitude, longitude }} title={event.name}>
+                                <Marker key={place.id} coordinate={{ latitude, longitude }} title={place.name}>
                                     <Ionicons style={{ color: 'red' }} size={40} name="location" />
                                 </Marker>
                             )

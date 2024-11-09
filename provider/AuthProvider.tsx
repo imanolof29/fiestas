@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: any) => {
 
                     if (storedSession) {
                         setSession(storedSession);
-                        axios.defaults.headers.common['Authorization'] = `Bearer ${storedSession.accessToken}`;
+                        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${storedSession.accessToken}`;
                     }
                 } else {
                     console.log("No hay sesión almacenada.");
@@ -57,6 +57,7 @@ export const AuthProvider = ({ children }: any) => {
             const result = await axiosInstance.post<Session>('/auth/login', { email, password })
             if (!result.data) return
             await SecureStore.setItem(SESION_KEY, JSON.stringify(result.data))
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${result.data.accessToken}`;
             setSession(result.data)
         } catch (e) {
             console.log(e)

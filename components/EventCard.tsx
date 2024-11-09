@@ -1,7 +1,8 @@
+import { EventDto } from "@/types/event";
 import { StyleSheet, View, Text, Image, Dimensions } from "react-native";
 
-export default function EventCard(event: any) {
+export default function EventCard(properties: { event: EventDto }) {
     return (
-        <Text>{event.name}</Text>
+        <Text>{properties.event.name}</Text>
     )
 }

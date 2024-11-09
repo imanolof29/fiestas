@@ -1,7 +1,7 @@
 import { useEventList } from '@/api/events';
 import EventCard from '@/components/EventCard';
-import { Link } from 'expo-router';
-import { StyleSheet, FlatList, ActivityIndicator, Text, View, SafeAreaView } from 'react-native';
+import { EventDto } from '@/types/event';
+import { FlatList, ActivityIndicator, Text, View, SafeAreaView } from 'react-native';
 
 export default function HomeScreen() {
 
@@ -23,18 +23,10 @@ export default function HomeScreen() {
     )
   }
 
-  const renderItem = ({ item }: { item: any }) => {
-    return (
-      <Link href={{ pathname: "/event-details/[id]", params: { id: item.id } }} asChild>
-        <Text>{item.name}</Text>
-      </Link>
-    )
-  }
-
   return (
     <>
       <SafeAreaView />
-      <FlatList data={data} renderItem={({ item }: { item: any }) => <EventCard event={item} />} />
+      <FlatList data={data?.data} renderItem={({ item }: { item: EventDto }) => <EventCard event={item} />} />
     </>
   );
 }
