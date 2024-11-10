@@ -4,10 +4,9 @@ import { ActivityIndicator, Text, View } from "react-native"
 
 const EventDetails = () => {
 
-    const { id: idString } = useLocalSearchParams();
-    const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
+    const { id } = useLocalSearchParams<{ id: string }>();
 
-    const { data, isLoading, error } = useEventDetail("9e207495-fa1b-4614-a2a1-d9252959a3e6")
+    const { data, isLoading, error } = useEventDetail(id)
 
     if (isLoading) {
         return (
@@ -27,7 +26,7 @@ const EventDetails = () => {
 
     return (
         <View>
-            <Text>{data.name}</Text>
+            <Text>{data?.name}</Text>
         </View>
     )
 }

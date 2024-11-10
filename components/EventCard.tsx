@@ -1,8 +1,11 @@
 import { EventDto } from "@/types/event";
-import { StyleSheet, View, Text, Image, Dimensions } from "react-native";
+import { Link } from "expo-router";
+import { Text } from "react-native";
 
 export default function EventCard(properties: { event: EventDto }) {
     return (
-        <Text>{properties.event.name}</Text>
+        <Link href={`/(auth)/event-details/${properties.event.id}`}>
+            <Text>{properties.event.name}</Text>
+        </Link>
     )
 }
