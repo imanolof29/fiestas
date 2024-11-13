@@ -60,6 +60,10 @@ export const AuthProvider = ({ children }: any) => {
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${result.data.accessToken}`;
             setSession(result.data)
         } catch (e) {
+            //No se esta throweando el error, con lo cual al entrar al catch imprime el error y termina la funcion
+            //Como no estas lanzando ninguna excepcion, en la pagina del login la funcion onLoginPress interpreta que no hay ningun fallo y navega a la pagina home
+
+            //DEBERIAS lanzar una excepcion para recogerla en el try/catch del login
             console.log(e)
         }
     }
