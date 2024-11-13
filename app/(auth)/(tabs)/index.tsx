@@ -1,6 +1,7 @@
 import { useEventList } from '@/api/events';
 import EventCard from '@/components/EventCard';
 import { EventDto } from '@/types/event';
+import React from 'react';
 import { FlatList, ActivityIndicator, Text, View, SafeAreaView } from 'react-native';
 
 export default function HomeScreen() {

@@ -1,54 +1,66 @@
-import { useAuth } from "@/provider/AuthProvider"
-import { Link } from "expo-router"
-import { useState } from "react"
-import { StyleSheet, View, TextInput, Text, TouchableOpacity } from "react-native"
+// app/(public)/login.tsx
 
-const Page = () => {
+import React, { useState } from 'react';
+import { View, TextInput, Button, Alert, StyleSheet, Text } from 'react-native';
+import { useAuth } from '@/provider/AuthProvider';
+import { useRouter } from 'expo-router';
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+export default function LoginScreen() {
+  const { onLogin } = useAuth(); // Usamos handleLogin desde el contexto
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    const [loading, setLoading] = useState(false)
-
-    const { onLogin } = useAuth()
-
-    const handleSubmit = () => {
-        onLogin!(email, password)
+  const onLoginPress = async () => {
+    try {
+      await onLogin?.(email, password);
+      // ir a la parge de sesion iniciada
+      router.replace('/(tabs)/');
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Correo electrónico o contraseña incorrectos.');
     }
-
-    return (
-        <View style={styles.container}>
-            <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.inputField} />
-            <TextInput secureTextEntry placeholder="Contraseña" value={password} onChangeText={setPassword} style={styles.inputField} />
-            <TouchableOpacity onPress={handleSubmit}>
-                <Text>Iniciar sesion</Text>
-            </TouchableOpacity>
-            <Link href={"/(public)/register"} style={styles.button} asChild>
-                <Text>Crear cuenta</Text>
-            </Link>
-        </View>
-    )
+  };
+  
+  return (
+    <View style={styles.container}>
+      <Text>Email</Text>
+      <TextInput
+        //placeholder="Correo electrónico"
+        value={email}
+        onChangeText={setEmail}
+        onFocus={() => setEmail('')} 
+        style={styles.input}
+        autoCapitalize="none"
+        keyboardType="email-address"
+/>
+      <Text>Contraseña</Text>
+      <TextInput
+        placeholder="Contraseña"
+        value={password}
+        onChangeText={setPassword}
+        onFocus={() => setPassword('')}
+        secureTextEntry
+        style={styles.input}
+      />
+      <Button title="Iniciar sesión" onPress={onLoginPress} />
+    </View>
+  );
 }
 
-export default Page
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 20
-    },
-    inputField: {
-        height: 50,
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        marginVertical: 10
-    },
-    button: {
-        marginTop: 20,
-        alignItems: 'center'
-    }
-})
+  container: {
+    flex: 1,
+    padding: 16,
+    paddingTop: 100,
+    backgroundColor: '#fff',
+  },
+  input: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+});
