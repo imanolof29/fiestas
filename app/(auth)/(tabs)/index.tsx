@@ -1,5 +1,6 @@
 import { Header } from '@/components/Header';
 import { DiscoCard } from '@/components/PlaceCardComponent';
+import { PlaceCardLoadingComponent } from '@/components/PlaceCardLoadingComponent';
 import { Clock, MapPin, Music, Star } from 'lucide-react-native';
 import { FlatList, Text, View, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 
@@ -103,6 +104,15 @@ const discos = [
 ];
 
 export default function HomeScreen() {
+
+  const LoadingView = () => {
+    return (
+      <View style={styles.container}>
+        {new Array(5).fill(null).map(() => <PlaceCardLoadingComponent />)}
+      </View>
+    )
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <Header />
@@ -111,7 +121,15 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         renderItem={(item) => <DiscoCard disco={item.item} />}
       />
+      <LoadingView />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+
+  }
+})
 
