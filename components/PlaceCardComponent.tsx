@@ -1,36 +1,39 @@
+import { Link } from "expo-router";
 import { Clock, MapPin, Music, Star } from "lucide-react-native";
 import { TouchableOpacity, StyleSheet, View, Image, Text } from "react-native";
 
-export const DiscoCard = ({ disco }: any) => (
-    <TouchableOpacity style={styles.discoCard}>
-        <Image source={{ uri: disco.image }} style={styles.discoImage} />
-        <View style={styles.discoInfo}>
-            <View style={styles.discoHeader}>
-                <Text style={styles.discoName}>{disco.name}</Text>
-                <View style={styles.ratingContainer}>
-                    <Star size={16} color="#FF5A36" fill="#FF5A36" />
-                    <Text style={styles.ratingText}>{disco.rating}</Text>
+export const PlaceCard = ({ disco }: any) => (
+    <Link href={`/(auth)/place-details/1`} asChild>
+        <TouchableOpacity style={styles.discoCard}>
+            <Image source={{ uri: disco.image }} style={styles.discoImage} />
+            <View style={styles.discoInfo}>
+                <View style={styles.discoHeader}>
+                    <Text style={styles.discoName}>{disco.name}</Text>
+                    <View style={styles.ratingContainer}>
+                        <Star size={16} color="#FF5A36" fill="#FF5A36" />
+                        <Text style={styles.ratingText}>{disco.rating}</Text>
+                    </View>
+                </View>
+                <View style={styles.discoDetails}>
+                    <MapPin size={16} color="#666" />
+                    <Text style={styles.discoAddress}>{disco.address}</Text>
+                </View>
+                <View style={styles.discoFeatures}>
+                    <View style={styles.feature}>
+                        <Clock size={14} color="#666" />
+                        <Text style={styles.featureText}>{disco.openHours}</Text>
+                    </View>
+                    <View style={styles.feature}>
+                        <Music size={14} color="#666" />
+                        <Text style={styles.featureText}>{disco.musicType}</Text>
+                    </View>
+                    <View style={styles.feature}>
+                        <Text style={styles.featureText}>{disco.price}</Text>
+                    </View>
                 </View>
             </View>
-            <View style={styles.discoDetails}>
-                <MapPin size={16} color="#666" />
-                <Text style={styles.discoAddress}>{disco.address}</Text>
-            </View>
-            <View style={styles.discoFeatures}>
-                <View style={styles.feature}>
-                    <Clock size={14} color="#666" />
-                    <Text style={styles.featureText}>{disco.openHours}</Text>
-                </View>
-                <View style={styles.feature}>
-                    <Music size={14} color="#666" />
-                    <Text style={styles.featureText}>{disco.musicType}</Text>
-                </View>
-                <View style={styles.feature}>
-                    <Text style={styles.featureText}>{disco.price}</Text>
-                </View>
-            </View>
-        </View>
-    </TouchableOpacity>
+        </TouchableOpacity>
+    </Link>
 );
 
 const styles = StyleSheet.create({
