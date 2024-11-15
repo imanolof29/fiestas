@@ -35,7 +35,7 @@ const ProfileOption: React.FC<ProfileOptionProps> = ({
             <Switch
                 value={toggleValue}
                 onValueChange={onToggle}
-                trackColor={{ false: "#E5E5E5", true: "#B4E55C" }}
+                trackColor={{ false: "#E5E5E5", true: "#FF4500" }}
             />
         ) : (
             <ChevronRight size={24} color="#1A1D1E" />
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        backgroundColor: '#B4E55C',
+        backgroundColor: '#FF4500',
         borderRadius: 20,
         padding: 8,
     },
