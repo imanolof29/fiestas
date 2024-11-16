@@ -20,13 +20,11 @@ const InitialLayout = () => {
 
     const inAuthGroup = segments[0] === '(tabs)'
 
-    // if (session && !inAuthGroup) {
-    //   router.replace('/(tabs)/')
-    // } else if (!session && inAuthGroup) {
-    //   router.replace('/(public)/login')
-    // }
-
-    router.replace('/(tabs)/')
+    if (session && !inAuthGroup) {
+      router.replace('/(tabs)/')
+    } else if (!session && inAuthGroup) {
+      router.replace('/(public)/login')
+    }
 
   }, [session, initialized])
 

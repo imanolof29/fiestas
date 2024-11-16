@@ -1,3 +1,4 @@
+import { usePlaceList } from '@/api/places';
 import { Header } from '@/components/Header';
 import { PlaceCard } from '@/components/PlaceCardComponent';
 import { PlaceCardLoadingComponent } from '@/components/PlaceCardLoadingComponent';
@@ -104,6 +105,8 @@ const discos = [
 
 export default function HomeScreen() {
 
+  const { data, isLoading, error } = usePlaceList()
+
   const LoadingView = () => {
     return (
       <View style={styles.container}>
@@ -116,10 +119,10 @@ export default function HomeScreen() {
     <View style={{ flex: 1 }}>
       <Header />
       <FlatList
-        data={discos}
+        data={data?.data}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
-        renderItem={(item) => <PlaceCard disco={item.item} />}
+        renderItem={(item) => <PlaceCard place={item.item} />}
       />
       <LoadingView />
     </View>
