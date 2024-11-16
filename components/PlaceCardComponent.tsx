@@ -21,7 +21,7 @@ export const PlaceCard = (properties: PlaceCardProperties) => (
                 </View>
                 <View style={styles.discoDetails}>
                     <MapPin size={16} color="#666" />
-                    <Text style={styles.discoAddress}>{"Calle Particular de Allende 2, Bilbao"}</Text>
+                    <Text style={styles.discoAddress}>{properties.place.city}</Text>
                 </View>
                 <View style={styles.discoFeatures}>
                     <View style={styles.feature}>

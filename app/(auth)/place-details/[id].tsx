@@ -1,56 +1,89 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
-import { Clock, Music, Star } from "lucide-react-native";
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Linking } from "react-native"
-import MapView, { Marker } from "react-native-maps";
+import axiosInstance from "@/api";
+import { CommentDto } from "@/types/comment";
+import { PaginationDto } from "@/types/pagination";
+import { PlaceDto } from "@/types/place";
+import { useLocalSearchParams } from "expo-router/build/hooks";
+import { Clock, Music, Send, Star } from "lucide-react-native";
+import { useEffect, useState } from "react";
+import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native"
 
 const PlaceDetails = () => {
 
-    const comments = [
-        { id: 1, author: 'Juan Pérez', text: '¡Gran ambiente! Música increíble y atención excelente.', date: '2024-11-10' },
-        { id: 2, author: 'Maria López', text: 'La pista de baile es muy grande, pero podría mejorar la acústica.', date: '2024-11-12' },
-        { id: 3, author: 'Carlos García', text: 'Recomiendo las horas después de medianoche, el ambiente se vuelve mucho mejor.', date: '2024-11-14' },
-    ];
+    const { id } = useLocalSearchParams<{ id: string }>()
+
+    const [place, setPlace] = useState<PlaceDto>()
+
+    const [comments, setComments] = useState<CommentDto[]>([])
+
+    const [comment, setComment] = useState<string>("")
+
+    useEffect(() => {
+        if (!id) return
+        getPlaceData()
+        getComments()
+    }, [])
+
+    async function getPlaceData() {
+        const response = await axiosInstance.get<PlaceDto>(`places/pick/${id}`)
+        setPlace(response.data)
+    }
+
+    async function getComments() {
+        const response = await axiosInstance.get<PaginationDto<CommentDto>>(`comments/find/${id}`)
+        setComments(response.data.data)
+    }
+
+    async function postComment() {
+        return await axiosInstance.post("comments/create", { placeId: id, content: comment })
+    }
 
     return (
         <View style={styles.container}>
             <View style={styles.headerImageContainer}>
                 <Image source={{ uri: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60' }} style={styles.headerImage} />
             </View>
-            <ScrollView contentContainerStyle={styles.detailsContainer}>
-                <Text style={styles.title}>{'Fever Club Bilbao'}</Text>
-                <Text style={styles.subtitle}>{'Calle Particular de Allende 2, Bilbao'}</Text>
-                <View style={styles.infoContainer}>
-                    <View style={styles.ratingContainer}>
-                        <Star size={16} color="#FF5A36" fill="#FF5A36" />
-                        <Text style={styles.ratingText}>Rating: {"4.8"}</Text>
-                    </View>
-                    <View style={styles.featuresContainer}>
-                        <View style={styles.feature}>
-                            <Clock size={16} color="#666" />
-                            <Text style={styles.featureText}>{'23:30 - 06:00'}</Text>
+            {place ? (
+                <ScrollView contentContainerStyle={styles.detailsContainer}>
+                    <Text style={styles.title}>{place?.name}</Text>
+                    <Text style={styles.subtitle}>{place.city}</Text>
+                    <View style={styles.infoContainer}>
+                        <View style={styles.ratingContainer}>
+                            <Star size={16} color="#FF5A36" fill="#FF5A36" />
+                            <Text style={styles.ratingText}>Rating: {"4.8"}</Text>
                         </View>
-                        <View style={styles.feature}>
-                            <Music size={16} color="#666" />
-                            <Text style={styles.featureText}>{'House / EDM'}</Text>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.commentsContainer}>
-                    <Text style={styles.commentsTitle}>Comentarios</Text>
-                    {comments.length > 0 ? (
-                        comments.map((comment) => (
-                            <View key={comment.id} style={styles.comment}>
-                                <Text style={styles.commentAuthor}>{comment.author}</Text>
-                                <Text style={styles.commentDate}>{comment.date}</Text>
-                                <Text style={styles.commentText}>{comment.text}</Text>
+                        <View style={styles.featuresContainer}>
+                            <View style={styles.feature}>
+                                <Clock size={16} color="#666" />
+                                <Text style={styles.featureText}>{'23:30 - 06:00'}</Text>
                             </View>
-                        ))
-                    ) : (
-                        <Text style={styles.noComments}>No hay comentarios aún.</Text>
-                    )}
-                </View>
-            </ScrollView>
+                            <View style={styles.feature}>
+                                <Music size={16} color="#666" />
+                                <Text style={styles.featureText}>{'House / EDM'}</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={styles.commentsContainer}>
+                        <Text style={styles.commentsTitle}>Comentarios</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TextInput value={comment} placeholder="Escribe un comentario" onChangeText={setComment} />
+                            <TouchableOpacity onPress={async () => await postComment()}>
+                                <Send />
+                            </TouchableOpacity>
+                        </View>
+                        {comments ? (
+                            comments.map((commentData: CommentDto) => (
+                                <View key={commentData.id} style={styles.comment}>
+                                    <Text style={styles.commentAuthor}>{commentData.user.username}</Text>
+                                    <Text style={styles.commentDate}>{commentData.created.toString() ?? ""}</Text>
+                                    <Text style={styles.commentText}>{commentData.content}</Text>
+                                </View>
+                            ))
+                        ) : (
+                            <Text style={styles.noComments}>No hay comentarios aún.</Text>
+                        )}
+                    </View>
+                </ScrollView>
+            ) : (<ActivityIndicator />)}
         </View>
     );
 }
