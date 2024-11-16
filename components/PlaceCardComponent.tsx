@@ -8,7 +8,7 @@ type PlaceCardProperties = {
 }
 
 export const PlaceCard = (properties: PlaceCardProperties) => (
-    <Link href={`/(auth)/place-details/1`} asChild>
+    <Link href={`/(auth)/place-details/${properties.place.id}`} key={properties.place.id} asChild>
         <TouchableOpacity style={styles.discoCard}>
             <Image source={{ uri: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60' }} style={styles.discoImage} />
             <View style={styles.discoInfo}>

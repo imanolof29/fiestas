@@ -6,8 +6,6 @@ import MapView, { Marker } from "react-native-maps";
 
 const PlaceDetails = () => {
 
-    const navigation = useNavigation()
-
     const comments = [
         { id: 1, author: 'Juan Pérez', text: '¡Gran ambiente! Música increíble y atención excelente.', date: '2024-11-10' },
         { id: 2, author: 'Maria López', text: 'La pista de baile es muy grande, pero podría mejorar la acústica.', date: '2024-11-12' },
@@ -18,12 +16,6 @@ const PlaceDetails = () => {
         <View style={styles.container}>
             <View style={styles.headerImageContainer}>
                 <Image source={{ uri: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60' }} style={styles.headerImage} />
-                <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => { navigation.goBack(); }}
-                >
-                    <Ionicons name="arrow-back" size={24} color="white" />
-                </TouchableOpacity>
             </View>
             <ScrollView contentContainerStyle={styles.detailsContainer}>
                 <Text style={styles.title}>{'Fever Club Bilbao'}</Text>
@@ -79,12 +71,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         resizeMode: 'cover',
-    },
-    backButton: {
-        position: 'absolute',
-        top: 40,
-        left: 16,
-        zIndex: 1,
     },
     detailsContainer: {
         padding: 16,

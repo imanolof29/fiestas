@@ -1,14 +1,17 @@
-import { Slot, useRouter, useSegments } from 'expo-router';
+import { Slot, Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/provider/AuthProvider';
+import { TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const queryClient = new QueryClient()
 
 const InitialLayout = () => {
+
   const { session, initialized } = useAuth()
   const router = useRouter()
   const segments = useSegments();
@@ -28,11 +31,27 @@ const InitialLayout = () => {
 
   }, [session, initialized])
 
-  return <Slot />
-
+  return (
+    <Stack>
+      <Stack.Screen name="(auth)/(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(auth)/place-details/[id]"
+        options={{
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="arrow-back" size={34} color={"white"} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen name="(public)" options={{ headerShown: false }} />
+    </Stack>
+  )
 }
 
-export default function RootLayout() {
+const RootLayoutNav = () => {
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
@@ -41,3 +60,5 @@ export default function RootLayout() {
     </AuthProvider>
   )
 }
+
+export default RootLayoutNav
