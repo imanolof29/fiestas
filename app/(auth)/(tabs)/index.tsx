@@ -118,13 +118,15 @@ export default function HomeScreen() {
   return (
     <View style={{ flex: 1 }}>
       <Header />
-      <FlatList
-        data={data?.data}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => item.id}
-        renderItem={(item) => <PlaceCard place={item.item} />}
-      />
-      <LoadingView />
+      {data && (
+        <FlatList
+          data={data?.data}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
+          renderItem={(item) => <PlaceCard place={item.item} />}
+        />
+      )}
+      {isLoading && (<LoadingView />)}
     </View>
   );
 }
