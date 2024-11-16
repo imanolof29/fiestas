@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, SafeAreaView, Switch } from 'react-native';
 import { Camera, ChevronRight, Bell, Moon, HelpCircle, FileText, LogOut } from 'lucide-react-native';
-import { CustomButton } from '@/components/ButtonComponent';
-import { CustomInput } from '@/components/InputComponent';
+import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
+import { useAuth } from '@/provider/AuthProvider';
 
 type IconProps = {
     size: number;
     color: string;
 };
+
+interface ImageAsset {
+    uri: string;
+    type: string;
+    fileName?: string;
+}
 
 type ProfileOptionProps = {
     icon: React.ComponentType<IconProps>;
@@ -48,13 +55,51 @@ export default function ProfileScreen() {
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
+    const { session } = useAuth()
+
+    const pickImage = async (): Promise<void> => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1
+        });
+
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+            const selectedPhoto = result.assets[0];
+            await uploadPhoto({
+                uri: selectedPhoto.uri,
+                type: selectedPhoto.type || 'image/jpeg',
+                fileName: selectedPhoto.fileName || 'profile.jpg',
+            });
+        }
+    };
+
+    const uploadPhoto = async (photo: ImageAsset): Promise<void> => {
+        const formData = new FormData();
+        formData.append('file', {
+            uri: photo.uri,
+            type: photo.type,
+            name: photo.fileName,
+        } as any);
+
+        try {
+            const response = await axios.post("http://192.168.68.107:3000/users/profile-picture", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${session?.accessToken}`
+                },
+            });
+            console.log('Imagen subida con éxito:', response.data);
+        } catch (error) {
+            console.error('Error al subir la imagen:', error);
+        }
+    };
+
     const handleLogout = () => {
         // Implement logout logic here
     };
 
-    const handleUpdatePhoto = () => {
-        console.log('Update photo');
-    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -68,7 +113,7 @@ export default function ProfileScreen() {
                         source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
                         style={styles.profileImage}
                     />
-                    <TouchableOpacity style={styles.cameraButton} onPress={handleUpdatePhoto}>
+                    <TouchableOpacity style={styles.cameraButton} onPress={async () => pickImage()}>
                         <Camera size={24} color="#FFF" />
                     </TouchableOpacity>
                 </View>
