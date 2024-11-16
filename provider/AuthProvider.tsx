@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import * as SecureStore from 'expo-secure-store';
-import axios from "axios";
 import axiosInstance from "@/api";
 
 const SESION_KEY = 'session-key'

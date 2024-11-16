@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/provider/AuthProvider';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LocationProvider } from '@/provider/LocationProvider';
 
 const queryClient = new QueryClient()
 
@@ -54,9 +55,11 @@ const InitialLayout = () => {
 const RootLayoutNav = () => {
   return (
     <AuthProvider>
-      <QueryClientProvider client={queryClient}>
-        <InitialLayout />
-      </QueryClientProvider>
+      <LocationProvider>
+        <QueryClientProvider client={queryClient}>
+          <InitialLayout />
+        </QueryClientProvider>
+      </LocationProvider>
     </AuthProvider>
   )
 }
