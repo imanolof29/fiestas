@@ -1,5 +1,5 @@
 import * as Notifications from "expo-notifications";
-import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { createContext, PropsWithChildren, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { Subscription } from "expo-modules-core";
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
 
@@ -27,9 +27,7 @@ interface NotificationProviderProps {
     children: ReactNode;
 }
 
-export const NotificationProvider: React.FC<NotificationProviderProps> = ({
-    children,
-}) => {
+export const NotificationProvider = ({ children }: PropsWithChildren) => {
     const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
     const [notification, setNotification] =
         useState<Notifications.Notification | null>(null);

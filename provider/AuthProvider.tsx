@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react"
 import * as SecureStore from 'expo-secure-store';
 import axiosInstance from "@/api";
 
@@ -23,7 +23,7 @@ export function useAuth() {
     return useContext(AuthContext)
 }
 
-export const AuthProvider = ({ children }: any) => {
+export const AuthProvider = ({ children }: PropsWithChildren) => {
 
     const [session, setSession] = useState<Session | null>(null)
     const [initialized, setInitialized] = useState(false)
