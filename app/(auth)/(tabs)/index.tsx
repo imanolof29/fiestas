@@ -4,7 +4,7 @@ import { PlaceCard } from '@/components/PlaceCardComponent';
 import { PlaceCardLoadingComponent } from '@/components/PlaceCardLoadingComponent';
 import { useLocation } from '@/provider/LocationProvider';
 import { useEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Modal, Text, Button, TouchableOpacity } from 'react-native';
+import { FlatList, View, StyleSheet, Modal, Text, TouchableOpacity } from 'react-native';
 
 export default function HomeScreen() {
   const { location, radius, getCurrentLocation, setRadius } = useLocation();
@@ -41,7 +41,7 @@ export default function HomeScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Selecciona una distancia</Text>
-            {[5000, 10000, 20000, 50000].map((distance) => (
+            {[5000, 10000, 20000, 25000, 50000, 100000, 150000].map((distance) => (
               <TouchableOpacity
                 key={distance}
                 style={[
@@ -68,7 +68,7 @@ export default function HomeScreen() {
 
       {data && (
         <FlatList
-          data={data}
+          data={data.data}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <PlaceCard place={item} />}
