@@ -1,10 +1,13 @@
-import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { Bell, ChevronDown, Filter, Menu, Search } from "lucide-react-native";
 import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from "react-native"
 import { TextInput } from "react-native";
 
-export const Header = () => {
+interface HeaderProperties {
+    onFilterClick: () => void
+}
+
+export const Header = (properties: HeaderProperties) => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar style="light" />
@@ -28,7 +31,9 @@ export const Header = () => {
                         <Search size={20} color="#FFF" />
                         <TextInput placeholder="Buscar cerca de ti" placeholderTextColor="white" style={styles.searchInput} />
                     </View>
-                    <Filter size={20} color="#FFF" />
+                    <TouchableOpacity onPress={properties.onFilterClick}>
+                        <Filter size={20} color="#FFF" />
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>

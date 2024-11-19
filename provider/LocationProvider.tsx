@@ -4,6 +4,8 @@ import * as Location from 'expo-location';
 interface LocationContextType {
     location: Location.LocationObject | null;
     errorMsg: string | null;
+    radius: number
+    setRadius: (value: number) => void
     getCurrentLocation: () => Promise<void>;
 }
 
@@ -12,6 +14,7 @@ const LocationContext = createContext<LocationContextType | undefined>(undefined
 export const LocationProvider = ({ children }: PropsWithChildren) => {
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [radius, setRadius] = useState<number>(5000)
 
     const getCurrentLocation = async () => {
         try {
@@ -23,7 +26,7 @@ export const LocationProvider = ({ children }: PropsWithChildren) => {
 
             let currentLocation = await Location.getCurrentPositionAsync({});
             setLocation(currentLocation);
-            setErrorMsg(null); // Limpiar errores previos
+            setErrorMsg(null);
         } catch (error) {
             setErrorMsg('Failed to fetch location');
             console.error(error);
@@ -31,7 +34,7 @@ export const LocationProvider = ({ children }: PropsWithChildren) => {
     };
 
     return (
-        <LocationContext.Provider value={{ location, errorMsg, getCurrentLocation }}>
+        <LocationContext.Provider value={{ location, errorMsg, getCurrentLocation, radius, setRadius }}>
             {children}
         </LocationContext.Provider>
     );

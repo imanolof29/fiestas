@@ -2,7 +2,9 @@ import { usePlaceList } from '@/api/places';
 import { Header } from '@/components/Header';
 import { PlaceCard } from '@/components/PlaceCardComponent';
 import { PlaceCardLoadingComponent } from '@/components/PlaceCardLoadingComponent';
-import { FlatList, View, StyleSheet } from 'react-native';
+import { useLocation } from '@/provider/LocationProvider';
+import { useEffect, useState } from 'react';
+import { FlatList, View, StyleSheet, Modal, Text, Button } from 'react-native';
 
 const discos = [
   {
@@ -105,19 +107,35 @@ const discos = [
 
 export default function HomeScreen() {
 
-  const { data, isLoading, error } = usePlaceList()
+  const { location, radius, getCurrentLocation } = useLocation()
+
+  useEffect(() => {
+    getCurrentLocation()
+  }, [])
+
+  const { data, isLoading, error } = usePlaceList(location?.coords.latitude ?? 0, location?.coords.longitude ?? 0, radius)
+
+  const [visible, setVisible] = useState<boolean>(false)
 
   const LoadingView = () => {
     return (
       <View style={styles.container}>
-        {new Array(5).fill(null).map(() => <PlaceCardLoadingComponent />)}
+        {new Array(5).fill(null).map((item) => <PlaceCardLoadingComponent key={item} />)}
       </View>
     )
   }
 
   return (
     <View style={{ flex: 1 }}>
-      <Header />
+      <Header onFilterClick={() => setVisible(!visible)} />
+      <Modal animationType='slide' transparent={true} visible={visible} onRequestClose={() => setVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text>Modal text</Text>
+            <Button title="Cerrar Modal" onPress={() => setVisible(false)} />
+          </View>
+        </View>
+      </Modal>
       {data && (
         <FlatList
           data={data?.data}
@@ -134,6 +152,23 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  }
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
 })
 
