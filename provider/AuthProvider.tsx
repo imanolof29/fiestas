@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react"
 import * as SecureStore from 'expo-secure-store';
 import axiosInstance from "@/api";
+import { jwtDecode } from "jwt-decode";
 
 const SESION_KEY = 'session-key'
 
@@ -36,7 +37,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
                     const storedSession = JSON.parse(data) as Session;
 
                     if (storedSession) {
-                        setSession(storedSession);
+                        checkJwt(storedSession)
                         axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${storedSession.accessToken}`;
                     }
                 } else {
@@ -50,6 +51,49 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         }
         loadSession()
     }, [])
+
+    const checkJwt = async (session: Session) => {
+        const decodedJwt = session.accessToken ? jwtDecode(session.accessToken) : null
+
+        if (decodedJwt && decodedJwt.exp) {
+            const remainingTime = decodedJwt.exp * 1000 - Date.now()
+            if (remainingTime < 0 || remainingTime <= 10000) {
+                console.log("Access token has expired or has 5 minutes remaining. Refreshing token...")
+                const newSession = await refreshAuth(session.refreshToken)
+                if (newSession) {
+                    console.log("New access token received. Updating auth state")
+                    await SecureStore.deleteItemAsync(SESION_KEY)
+                    await SecureStore.setItem(SESION_KEY, JSON.stringify(newSession))
+                    setSession(newSession)
+                    setInitialized(true)
+                } else {
+                    console.log("Refresh token expired. Deleting auth data...")
+                    await SecureStore.deleteItemAsync(SESION_KEY)
+                    setInitialized(true)
+                }
+            }
+        } else {
+            setInitialized(true)
+        }
+
+    }
+
+    const refreshAuth = async (refreshToken: string): Promise<Session | null> => {
+        try {
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${refreshToken}`;
+            const result = await axiosInstance.post<Session>('/auth/refresh');
+            if (!result.data) {
+                return null;
+            }
+
+            await SecureStore.setItemAsync(SESION_KEY, JSON.stringify(result.data));
+
+            return result.data
+        } catch (error) {
+            console.error('Error refreshing auth:', error instanceof Error ? error.message : error);
+            return null;
+        }
+    };
 
     const handleLogin = async (email: string, password: string) => {
         try {
