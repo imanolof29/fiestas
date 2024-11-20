@@ -7,39 +7,6 @@ interface HeaderProperties {
     onFilterClick: () => void
 }
 
-export const Header = (properties: HeaderProperties) => {
-    return (
-        <SafeAreaView style={styles.safeArea}>
-            <StatusBar style="light" />
-            <View style={styles.headerContainer}>
-                <View style={styles.header}>
-                    <View style={styles.locationContainer}>
-                        <Text style={styles.locationLabel}>Tu ubicacion</Text>
-                        <TouchableOpacity style={styles.locationSelector}>
-                            <Text style={styles.locationText}>Irun, Gipuzkoa</Text>
-                            <ChevronDown size={20} color="#FF4500" />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.actions}>
-                        <TouchableOpacity style={styles.iconButton}>
-                            <Bell size={24} color="#FFF" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.searchContainer}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                        <Search size={20} color="#FFF" />
-                        <TextInput placeholder="Buscar cerca de ti" placeholderTextColor="white" style={styles.searchInput} />
-                    </View>
-                    <TouchableOpacity onPress={properties.onFilterClick}>
-                        <Filter size={20} color="#FFF" />
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </SafeAreaView>
-    )
-}
-
 const styles = StyleSheet.create({
     safeArea: {
         backgroundColor: '#111',
@@ -48,7 +15,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 12,
         backgroundColor: '#111',
-        gap: 10
+        gap: 10,
     },
     header: {
         flexDirection: 'row',
@@ -82,13 +49,56 @@ const styles = StyleSheet.create({
     },
     searchContainer: {
         backgroundColor: '#333',
-        padding: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
         borderRadius: 8,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
     },
     searchInput: {
-        color: 'white'
-    }
+        flex: 1,
+        color: 'white',
+        fontSize: 16,
+        paddingVertical: 4,
+        paddingHorizontal: 8,
+    },
+    filterButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });
+
+export const Header = (properties: HeaderProperties) => {
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <StatusBar style="light" />
+            <View style={styles.headerContainer}>
+                <View style={styles.header}>
+                    <View style={styles.locationContainer}>
+                        <Text style={styles.locationLabel}>Tu ubicación</Text>
+                        <TouchableOpacity style={styles.locationSelector}>
+                            <Text style={styles.locationText}>Irun, Gipuzkoa</Text>
+                            <ChevronDown size={20} color="#FF4500" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.actions}>
+                        <TouchableOpacity style={styles.iconButton}>
+                            <Bell size={24} color="#FFF" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.searchContainer}>
+                    <Search size={20} color="#FFF" style={{ marginRight: 8 }} />
+                    <TextInput
+                        placeholder="Buscar cerca de ti"
+                        placeholderTextColor="white"
+                        style={styles.searchInput}
+                    />
+                    <TouchableOpacity onPress={properties.onFilterClick} style={styles.filterButton}>
+                        <Filter size={20} color="#FFF" />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </SafeAreaView>
+    );
+};
