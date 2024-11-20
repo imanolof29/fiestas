@@ -65,7 +65,11 @@ export default function HomeScreen() {
           </View>
         </View>
       </Modal>
-
+      {location && (
+        <View style={{ padding: 16 }}>
+          <Text style={{ color: '#333' }}>Mostrando a {radius / 1000}km de tu ubicacion</Text>
+        </View>
+      )}
       {data && (
         <FlatList
           data={data.data}
