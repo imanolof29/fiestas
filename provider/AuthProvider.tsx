@@ -3,117 +3,165 @@ import * as SecureStore from 'expo-secure-store';
 import axiosInstance from "@/api";
 import { jwtDecode } from "jwt-decode";
 
-const SESION_KEY = 'session-key'
-
 type Session = {
-    accessToken: string
-    refreshToken: string
-    email: string
+    accessToken: string;
+    refreshToken: string;
+    email: string;
+}
+
+type JwtPayload = {
+    exp: number;
+    email: string;
+    [key: string]: any;
 }
 
 type AuthProps = {
-    session: Session | null
-    onLogin: (email: string, password: string) => Promise<any>
-    onLogout: () => Promise<void>
-    initialized: boolean
+    session: Session | null;
+    login: (email: string, password: string) => Promise<boolean>;
+    logout: () => Promise<void>;
+    isAuthenticated: boolean;
+    isLoading: boolean;
 }
 
-const AuthContext = createContext<Partial<AuthProps>>({})
+// Constants
+const SESSION_KEY = 'user_session';
+const REFRESH_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes before expiration
 
-export function useAuth() {
-    return useContext(AuthContext)
-}
+// Create context with default values
+const AuthContext = createContext<AuthProps>({
+    session: null,
+    login: async () => false,
+    logout: async () => { },
+    isAuthenticated: false,
+    isLoading: true
+});
 
-export const AuthProvider = ({ children }: PropsWithChildren) => {
+// Custom hook for using auth context
+export const useAuth = () => useContext(AuthContext);
 
-    const [session, setSession] = useState<Session | null>(null)
-    const [initialized, setInitialized] = useState(false)
+export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
+    const [session, setSession] = useState<Session | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
+    // Load session on app start
     useEffect(() => {
-        const loadSession = async () => {
+        const initializeAuth = async () => {
             try {
-                const data = await SecureStore.getItemAsync(SESION_KEY);
-                if (data) {
-                    const storedSession = JSON.parse(data) as Session;
+                const storedSessionJson = await SecureStore.getItemAsync(SESSION_KEY);
 
-                    if (storedSession) {
-                        checkJwt(storedSession)
+                if (storedSessionJson) {
+                    const storedSession: Session = JSON.parse(storedSessionJson);
+
+                    // Validate token before setting session
+                    const isValidToken = await validateToken(storedSession.accessToken);
+
+                    if (isValidToken) {
+                        setSession(storedSession);
                         axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${storedSession.accessToken}`;
+                    } else {
+                        await refreshSession(storedSession.refreshToken);
                     }
-                } else {
-                    console.log("No hay sesión almacenada.");
                 }
             } catch (error) {
-                console.error("Error al cargar la sesión:", error);
+                console.error('Authentication initialization error:', error);
             } finally {
-                setInitialized(true);
+                setIsLoading(false);
             }
-        }
-        loadSession()
-    }, [])
+        };
 
-    const checkJwt = async (session: Session) => {
-        const decodedJwt = session.accessToken ? jwtDecode(session.accessToken) : null
+        initializeAuth();
+    }, []);
 
-        if (decodedJwt && decodedJwt.exp) {
-            const remainingTime = decodedJwt.exp * 1000 - Date.now()
-            if (remainingTime < 0 || remainingTime <= 10000) {
-                console.log("Access token has expired or has 5 minutes remaining. Refreshing token...")
-                const newSession = await refreshAuth(session.refreshToken)
-                if (newSession) {
-                    console.log("New access token received. Updating auth state")
-                    await SecureStore.deleteItemAsync(SESION_KEY)
-                    await SecureStore.setItem(SESION_KEY, JSON.stringify(newSession))
-                    setSession(newSession)
-                    setInitialized(true)
-                } else {
-                    console.log("Refresh token expired. Deleting auth data...")
-                    await SecureStore.deleteItemAsync(SESION_KEY)
-                    setInitialized(true)
-                }
-            }
-        } else {
-            setInitialized(true)
-        }
-
-    }
-
-    const refreshAuth = async (refreshToken: string): Promise<Session | null> => {
+    // Token validation method
+    const validateToken = async (token: string): Promise<boolean> => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${refreshToken}`;
-            const result = await axiosInstance.post<Session>('/auth/refresh');
-            if (!result.data) {
-                return null;
-            }
-
-            await SecureStore.setItemAsync(SESION_KEY, JSON.stringify(result.data));
-
-            return result.data
-        } catch (error) {
-            console.error('Error refreshing auth:', error instanceof Error ? error.message : error);
-            return null;
+            const decodedToken = jwtDecode<JwtPayload>(token);
+            return Date.now() < decodedToken.exp * 1000;
+        } catch {
+            return false;
         }
     };
 
-    const handleLogin = async (email: string, password: string) => {
+    // Refresh session method
+    const refreshSession = async (refreshToken: string): Promise<boolean> => {
         try {
-            const result = await axiosInstance.post<Session>('/auth/login', { email, password })
-            if (!result.data) return
-            await SecureStore.setItem(SESION_KEY, JSON.stringify(result.data))
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${result.data.accessToken}`;
-            setSession(result.data)
-        } catch (e) {
-            console.log(e)
+            // Set refresh token as Bearer token for refresh request
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${refreshToken}`;
+
+            const response = await axiosInstance.post<Session>('/auth/refresh');
+
+            if (response.data) {
+                const newSession = response.data;
+
+                // Save new session
+                await SecureStore.setItemAsync(SESSION_KEY, JSON.stringify(newSession));
+                setSession(newSession);
+
+                // Update axios default header with new access token
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newSession.accessToken}`;
+
+                return true;
+            }
+
+            // If refresh fails, logout
+            await logout();
+            return false;
+        } catch (error) {
+            console.error('Token refresh failed:', error);
+            await logout();
+            return false;
         }
-    }
+    };
 
-    const handleLogout = async () => {
-        setSession(null)
-        await SecureStore.deleteItemAsync(SESION_KEY)
-        axiosInstance.defaults.headers.common['Authorization'] = ''
-    }
+    // Login method
+    const login = async (email: string, password: string): Promise<boolean> => {
+        try {
+            const response = await axiosInstance.post<Session>('/auth/login', { email, password });
 
-    const value = { initialized, onLogin: handleLogin, session, onLogout: handleLogout }
+            if (response.data) {
+                const newSession = response.data;
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
+                // Save session
+                await SecureStore.setItemAsync(SESSION_KEY, JSON.stringify(newSession));
+                setSession(newSession);
+
+                // Update axios default header
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newSession.accessToken}`;
+
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error('Login failed:', error);
+            return false;
+        }
+    };
+
+    // Logout method
+    const logout = async () => {
+        // Simply clear local session and storage
+        await SecureStore.deleteItemAsync(SESSION_KEY);
+        setSession(null);
+
+        // Clear Authorization header
+        axiosInstance.defaults.headers.common['Authorization'] = '';
+    };
+
+    // Compute authentication status
+    const isAuthenticated = !!session;
+
+    return (
+        <AuthContext.Provider
+            value={{
+                session,
+                login,
+                logout,
+                isAuthenticated,
+                isLoading
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
+};

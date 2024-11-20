@@ -4,13 +4,11 @@ import { useEffect } from 'react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/provider/AuthProvider';
-import { TouchableOpacity } from 'react-native';
+import { ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LocationProvider } from '@/provider/LocationProvider';
 import * as Notifications from 'expo-notifications';
 import { NotificationProvider } from '@/provider/NotificationProvider';
-
-
 
 const queryClient = new QueryClient()
 
@@ -23,45 +21,66 @@ Notifications.setNotificationHandler({
 })
 
 const InitialLayout = () => {
-
-  const { session, initialized } = useAuth()
-  const router = useRouter()
+  const { session, isLoading } = useAuth();
+  const router = useRouter();
   const segments = useSegments();
 
   useEffect(() => {
-    if (!initialized) return
-
     SplashScreen.preventAutoHideAsync();
 
-    const inAuthGroup = segments[0] === '(tabs)'
+    if (!isLoading) {
+      const inAuthGroup = segments[0] === '(auth)';
+      const inPublicGroup = segments[0] === '(public)';
 
-    if (session && !inAuthGroup) {
-      router.replace('/(tabs)/')
-    } else if (!session && inAuthGroup) {
-      router.replace('/(public)/login')
+      if (session && !inAuthGroup) {
+        router.replace('/(auth)/(tabs)');
+      } else if (!session && !inPublicGroup) {
+        router.replace('/(public)/login');
+      }
+
+      SplashScreen.hideAsync();
     }
+  }, [session, isLoading, segments]);
 
-  }, [session, initialized])
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
 
   return (
     <Stack>
-      <Stack.Screen name="(auth)/(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(auth)/(tabs)"
+        options={{
+          headerShown: false
+        }}
+      />
+
       <Stack.Screen
         name="(auth)/place-details/[id]"
         options={{
           headerTransparent: true,
           headerTitle: '',
           headerLeft: () => (
-            <TouchableOpacity onPress={router.back}>
-              <Ionicons name="arrow-back" size={34} color={"white"} />
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons
+                name="arrow-back"
+                size={34}
+                color="white"
+              />
             </TouchableOpacity>
-          ),
+          )
         }}
       />
-      <Stack.Screen name="(public)" options={{ headerShown: false }} />
+
+      <Stack.Screen
+        name="(public)"
+        options={{
+          headerShown: false
+        }}
+      />
     </Stack>
-  )
-}
+  );
+};
 
 const RootLayoutNav = () => {
   return (
@@ -74,7 +93,7 @@ const RootLayoutNav = () => {
         </LocationProvider>
       </NotificationProvider>
     </AuthProvider>
-  )
-}
+  );
+};
 
-export default RootLayoutNav
+export default RootLayoutNav;

@@ -10,10 +10,10 @@ const Page = () => {
 
     const [loading, setLoading] = useState(false)
 
-    const { onLogin } = useAuth()
+    const { login } = useAuth()
 
     const handleSubmit = () => {
-        onLogin!(email, password)
+        login(email, password)
     }
 
     return (

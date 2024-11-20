@@ -55,7 +55,7 @@ export default function ProfileScreen() {
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
-    const { session, onLogout } = useAuth()
+    const { session, logout } = useAuth()
 
     const pickImage = async (): Promise<void> => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -97,7 +97,7 @@ export default function ProfileScreen() {
     };
 
     const handleLogout = () => {
-        onLogout?.()
+        logout()
     };
 
 
