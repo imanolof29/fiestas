@@ -1,44 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import * as Location from 'expo-location';
-import { useEventList } from "@/api/events";
 import MapSearchBar from "@/components/MapSearchBar";
 import FilterButton from "@/components/FilterButton";
 import { Ionicons } from "@expo/vector-icons";
 import { usePlaceList } from "@/api/places";
 import { PlaceDto } from "@/types/place";
+import { useLocation } from "@/provider/LocationProvider";
 
 export default function FiestaMap() {
 
-    const [location, setLocation] = useState<Location.LocationObject | null>(null);
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-    const { data, isLoading, error } = usePlaceList()
+    const { location, radius, getCurrentLocation, setRadius } = useLocation();
 
     useEffect(() => {
-        (async () => {
-            try {
-                let { status } = await Location.requestForegroundPermissionsAsync();
-                if (status !== 'granted') {
-                    setErrorMsg('Permission to access location was denied');
-                    return;
-                }
-
-                let currentLocation = await Location.getCurrentPositionAsync({});
-                setLocation(currentLocation);
-            } catch (error) {
-                setErrorMsg('Error obtaining location');
-            }
-        })();
+        getCurrentLocation();
     }, []);
 
-    let text = 'Waiting..';
-    if (errorMsg) {
-        text = errorMsg;
-    } else if (location) {
-        text = `Lat: ${location.coords.latitude}, Lon: ${location.coords.longitude}`;
-    }
+    const { data, isLoading, error } = usePlaceList(
+        location?.coords.latitude ?? 0,
+        location?.coords.longitude ?? 0,
+        radius
+    );
 
     if (isLoading) {
         return (
