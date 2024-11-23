@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapSearchBar from "@/components/MapSearchBar";
@@ -7,10 +7,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { usePlaceList } from "@/api/places";
 import { PlaceDto } from "@/types/place";
 import { useLocation } from "@/provider/LocationProvider";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+
 
 export default function FiestaMap() {
 
-    const { location, radius, getCurrentLocation, setRadius } = useLocation();
+    const { location, radius, getCurrentLocation } = useLocation();
+
+    const snapPoints = useMemo(() => [80, '50%', '90%'], []);
+
+    const bottomSheetRef = useRef<BottomSheet>(null);
+
 
     useEffect(() => {
         getCurrentLocation();
@@ -69,6 +76,11 @@ export default function FiestaMap() {
             ) : (
                 <Text>Waiting for location...</Text>
             )}
+            <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints}>
+                <BottomSheetView style={{ flex: 1 }}>
+                    <Text>Este es mi bottom sheet</Text>
+                </BottomSheetView>
+            </BottomSheet>
         </View>
     );
 }

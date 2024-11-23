@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LocationProvider } from '@/provider/LocationProvider';
 import * as Notifications from 'expo-notifications';
 import { NotificationProvider } from '@/provider/NotificationProvider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const queryClient = new QueryClient()
 
@@ -88,7 +89,9 @@ const RootLayoutNav = () => {
       <NotificationProvider>
         <LocationProvider>
           <QueryClientProvider client={queryClient}>
-            <InitialLayout />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <InitialLayout />
+            </GestureHandlerRootView>
           </QueryClientProvider>
         </LocationProvider>
       </NotificationProvider>
