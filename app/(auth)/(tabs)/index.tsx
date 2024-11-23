@@ -3,11 +3,24 @@ import { Header } from '@/components/Header';
 import { PlaceCard } from '@/components/PlaceCardComponent';
 import { PlaceCardLoadingComponent } from '@/components/PlaceCardLoadingComponent';
 import { useLocation } from '@/provider/LocationProvider';
-import { useEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Modal, Text, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import Slider from '@react-native-community/slider';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { FlatList, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 export default function HomeScreen() {
   const { location, radius, getCurrentLocation, setRadius } = useLocation();
+
+  const [tempRadius, setTempRadius] = useState(Math.round(radius))
+
+  const snapPoints = useMemo(() => ['35%'], [])
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const handleOpenPress = () => bottomSheetRef.current?.expand()
+
+  const handleClosePress = () => bottomSheetRef.current?.close()
 
   useEffect(() => {
     getCurrentLocation();
@@ -19,15 +32,17 @@ export default function HomeScreen() {
     radius
   );
 
-  const [visible, setVisible] = useState<boolean>(false);
-
   const handleRadiusChange = (distance: number) => {
-    setRadius(distance);
-    setVisible(false);
+    setTempRadius(Math.round(distance))
   };
 
+  const applyRadiusChange = () => {
+    setRadius(tempRadius)
+    handleClosePress()
+  }
+
   const LoadingView: React.FC = () => (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       {new Array(5).fill(null).map((_, index) => (
         <PlaceCardLoadingComponent key={index} />
       ))}
@@ -36,35 +51,7 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header onFilterClick={() => setVisible(!visible)} />
-      <Modal transparent={true} visible={visible} onRequestClose={() => setVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Selecciona una distancia</Text>
-            {[5000, 10000, 20000, 25000, 50000, 100000, 150000].map((distance) => (
-              <TouchableOpacity
-                key={distance}
-                style={[
-                  styles.option,
-                  radius === distance && styles.optionSelected,
-                ]}
-                onPress={() => handleRadiusChange(distance)}
-              >
-                <Text style={styles.optionText}>{distance} km</Text>
-              </TouchableOpacity>
-            ))}
-
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={[styles.button, styles.cancelButton]}
-                onPress={() => setVisible(false)}
-              >
-                <Text style={styles.buttonText}>Cancelar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <Header onFilterClick={handleOpenPress} />
       {location && (
         <View style={{ padding: 16 }}>
           <Text style={{ color: '#333' }}>Mostrando a {radius / 1000}km de tu ubicacion</Text>
@@ -79,6 +66,31 @@ export default function HomeScreen() {
         />
       )}
       {isLoading && <LoadingView />}
+      <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} index={-1}>
+        <BottomSheetView style={{ flex: 1 }}>
+          <View style={styles.contentContainer}>
+            <TouchableOpacity onPress={handleClosePress} style={styles.closeButton}>
+              <Ionicons style={styles.closeButtonIcon} name='close' />
+            </TouchableOpacity>
+            <View style={{ flex: 1, padding: 16 }}>
+              <Text style={styles.title}>Filtrar por distancia</Text>
+              <View style={styles.filterSection}>
+                <Text style={styles.sectionTitle}>Distancia: {tempRadius / 1000} km</Text>
+                <Slider
+                  value={tempRadius}
+                  onValueChange={handleRadiusChange}
+                  minimumValue={1000}
+                  maximumValue={200000}
+                  step={1}
+                />
+              </View>
+              <TouchableOpacity onPress={applyRadiusChange} style={styles.filterButton}>
+                <Text style={{ color: 'white', fontSize: 18, fontWeight: '600', textAlign: 'center' }}>Aplicar filtros</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
     </View>
   );
 }
@@ -90,59 +102,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  modalOverlay: {
+  contentContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContent: {
-    width: 300,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 20,
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 16,
   },
-  option: {
+  filterSection: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  filterButton: {
     padding: 10,
-    marginVertical: 5,
-    width: '100%',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  optionSelected: {
-    backgroundColor: '#007bff',
-  },
-  optionText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    marginTop: 20,
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  button: {
-    flex: 1,
-    padding: 10,
-    marginHorizontal: 5,
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#dc3545',
-  },
-  buttonText: {
+    backgroundColor: '#FF4500',
+    borderRadius: 10,
     color: 'white',
-    fontSize: 16,
   },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'transparent',
+    padding: 10,
+    borderRadius: 50,
+  },
+  closeButtonIcon: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+  }
 })
 
