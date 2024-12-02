@@ -65,6 +65,7 @@ export const AuthProvider = ({ children }: any) => {
 
             //DEBERIAS lanzar una excepcion para recogerla en el try/catch del login
             console.log(e)
+            throw e;
         }
     }
 
