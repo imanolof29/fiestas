@@ -1,6 +1,6 @@
 import axiosInstance from "@/api";
-import { CommentDto } from "@/types/comment";
-import { PaginationDto } from "@/types/pagination";
+import { useCommentList } from "@/hooks/api/comment.hook";
+import { usePlaceDetail } from "@/hooks/api/place.hook";
 import { PlaceDto } from "@/types/place";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import { Clock, Music, Send, Star } from "lucide-react-native";
@@ -11,27 +11,11 @@ const PlaceDetails = () => {
 
     const { id } = useLocalSearchParams<{ id: string }>()
 
-    const [place, setPlace] = useState<PlaceDto>()
-
-    const [comments, setComments] = useState<CommentDto[]>([])
-
     const [comment, setComment] = useState<string>("")
 
-    useEffect(() => {
-        if (!id) return
-        getPlaceData()
-        getComments()
-    }, [])
+    const { data: placeDetail, isLoading: isPlaceLoading } = usePlaceDetail(id)
 
-    async function getPlaceData() {
-        const response = await axiosInstance.get<PlaceDto>(`places/pick/${id}`)
-        setPlace(response.data)
-    }
-
-    async function getComments() {
-        const response = await axiosInstance.get<PaginationDto<CommentDto>>(`comments/find/${id}`)
-        setComments(response.data.data)
-    }
+    const { data: commentList, isLoading: isCommentListLoading } = useCommentList(id)
 
     async function postComment() {
         return await axiosInstance.post("comments/create", { placeId: id, content: comment })
@@ -42,10 +26,10 @@ const PlaceDetails = () => {
             <View style={styles.headerImageContainer}>
                 <Image source={{ uri: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60' }} style={styles.headerImage} />
             </View>
-            {place ? (
+            {placeDetail ? (
                 <ScrollView contentContainerStyle={styles.detailsContainer}>
-                    <Text style={styles.title}>{place?.name}</Text>
-                    <Text style={styles.subtitle}>{place.city}</Text>
+                    <Text style={styles.title}>{placeDetail?.name}</Text>
+                    <Text style={styles.subtitle}>{placeDetail.city}</Text>
                     <View style={styles.infoContainer}>
                         <View style={styles.ratingContainer}>
                             <Star size={16} color="#FF5A36" fill="#FF5A36" />
@@ -70,16 +54,14 @@ const PlaceDetails = () => {
                                 <Send />
                             </TouchableOpacity>
                         </View>
-                        {comments ? (
-                            comments.map((commentData: CommentDto) => (
+                        {commentList?.data && (
+                            commentList.data.map((commentData) => (
                                 <View key={commentData.id} style={styles.comment}>
                                     <Text style={styles.commentAuthor}>{commentData.user.username}</Text>
                                     <Text style={styles.commentDate}>{commentData.created.toString() ?? ""}</Text>
                                     <Text style={styles.commentText}>{commentData.content}</Text>
                                 </View>
                             ))
-                        ) : (
-                            <Text style={styles.noComments}>No hay comentarios aún.</Text>
                         )}
                     </View>
                 </ScrollView>
