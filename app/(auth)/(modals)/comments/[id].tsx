@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -10,6 +9,7 @@ import {
 import { useLocalSearchParams } from 'expo-router';
 import { useCommentList } from '@/hooks/api/comment.hook';
 import { CommentDto } from '@/types/comment';
+import { timeSince } from '../../../../utils/ago.utility';
 
 const PostComment = () => {
 
@@ -21,7 +21,7 @@ const PostComment = () => {
         return (
             <View key={item.id} style={styles.comment}>
                 <Text style={styles.commentAuthor}>{item.user.username}</Text>
-                <Text style={styles.commentDate}>{item.created.toString() ?? ""}</Text>
+                <Text style={styles.commentDate}>{timeSince(new Date(item.created))}</Text>
                 <Text style={styles.commentText}>{item.content}</Text>
             </View>
         )
