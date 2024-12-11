@@ -1,13 +1,14 @@
 import axiosInstance from "@/api";
 import { useCommentList } from "@/hooks/api/comment.hook";
 import { usePlaceDetail } from "@/hooks/api/place.hook";
-import { PlaceDto } from "@/types/place";
-import { useLocalSearchParams } from "expo-router/build/hooks";
+import { useLocalSearchParams, useRouter } from "expo-router/build/hooks";
 import { Clock, Music, Send, Star } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native"
 
 const PlaceDetails = () => {
+
+    const router = useRouter()
 
     const { id } = useLocalSearchParams<{ id: string }>()
 
@@ -47,6 +48,14 @@ const PlaceDetails = () => {
                         </View>
                     </View>
                     <View style={styles.commentsContainer}>
+                        <TouchableOpacity onPress={() => router.push({
+                            pathname: "/(auth)/(modals)/comments/[id]",
+                            params: {
+                                id
+                            }
+                        })}>
+                            <Text>Mostrar</Text>
+                        </TouchableOpacity>
                         <Text style={styles.commentsTitle}>Comentarios</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <TextInput value={comment} placeholder="Escribe un comentario" onChangeText={setComment} />

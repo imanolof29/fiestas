@@ -79,6 +79,18 @@ const InitialLayout = () => {
           headerShown: false
         }}
       />
+      <Stack.Screen
+        name="(auth)/(modals)/comments/[id]"
+        options={{
+          presentation: "modal",
+          headerTitle: "Comentarios",
+          headerRight: () => (
+            <TouchableOpacity onPress={() => router.dismiss()}>
+              <Ionicons name='close' size={34} color={"black"} />
+            </TouchableOpacity>
+          )
+        }}
+      />
     </Stack>
   );
 };
