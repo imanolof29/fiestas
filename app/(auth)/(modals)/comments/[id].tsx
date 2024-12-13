@@ -8,7 +8,8 @@ import {
     TextInput,
     SafeAreaView,
     TouchableOpacity,
-    Alert
+    Alert,
+    Image
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCommentList, usePostComment } from '@/hooks/api/comment.hook';
@@ -43,10 +44,13 @@ const PostComment = () => {
 
     const renderComment = ({ item }: { item: CommentDto }) => {
         return (
-            <View key={item.id} style={styles.comment}>
-                <Text style={styles.commentAuthor}>{item.user.username}</Text>
-                <Text style={styles.commentDate}>{timeSince(new Date(item.created))}</Text>
-                <Text style={styles.commentText}>{item.content}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <Image source={{ uri: item.user.profile ?? "" }} style={{ width: 50, height: 50, borderRadius: 100 }} />
+                <View key={item.id} style={styles.comment}>
+                    <Text style={styles.commentAuthor}>{item.user.username}</Text>
+                    <Text style={styles.commentDate}>{timeSince(new Date(item.created))}</Text>
+                    <Text style={styles.commentText}>{item.content}</Text>
+                </View>
             </View>
         )
     }

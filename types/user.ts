@@ -3,5 +3,6 @@ export interface UserDto {
     lastName: string
     email: string
     username: string
+    profile?: string
     created: Date
 }

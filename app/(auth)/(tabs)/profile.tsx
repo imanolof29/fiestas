@@ -117,6 +117,10 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </View>
 
+                <View style={{ flex: 1, alignItems: "center", paddingVertical: 20 }}>
+                    <Text>{session?.email}</Text>
+                </View>
+
                 <View style={styles.optionsContainer}>
                     <ProfileOption
                         icon={Bell as any}
