@@ -34,13 +34,13 @@ export const usePlaceList = (latitude: number, longitude: number, radius: number
 
     const query = useInfiniteQuery(
         ['places', latitude, longitude, radius, limit],
-        ({ pageParam = 0 }) => getPlacesByLocation(pageParam, limit, latitude, longitude, radius), // Paginación con pageParam
+        ({ pageParam = 0 }) => getPlacesByLocation(pageParam, limit, latitude, longitude, radius),
         {
             getNextPageParam: (lastPage, pages) => {
-                return lastPage.data.length === limit ? pages.length + 1 : undefined; // Si hay más resultados, carga la siguiente página
+                return lastPage.data.length === limit ? pages.length + 1 : undefined;
             },
             getPreviousPageParam: (firstPage, pages) => {
-                return pages.length > 1 ? pages.length - 1 : undefined; // Si existe, permite ir hacia atrás
+                return pages.length > 1 ? pages.length - 1 : undefined;
             }
         }
     );
