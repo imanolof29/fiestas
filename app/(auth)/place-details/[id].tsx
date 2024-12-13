@@ -2,6 +2,7 @@ import axiosInstance from "@/api";
 import { MapComponent } from "@/components/MapComponent";
 import { useCommentList } from "@/hooks/api/comment.hook";
 import { usePlaceDetail } from "@/hooks/api/place.hook";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router/build/hooks";
 import { Clock, Music, Send, Star } from "lucide-react-native";
 import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native"
@@ -39,27 +40,18 @@ const PlaceDetails = () => {
                                 <Music size={16} color="#666" />
                                 <Text style={styles.featureText}>{'House / EDM'}</Text>
                             </View>
+                            <TouchableOpacity onPress={() => router.push({
+                                pathname: "/(auth)/(modals)/comments/[id]",
+                                params: {
+                                    id
+                                }
+                            })}>
+                                <Ionicons name="chatbubble-outline" size={24} />
+                            </TouchableOpacity>
                         </View>
                     </View>
                     <View style={styles.commentsContainer}>
-                        <TouchableOpacity onPress={() => router.push({
-                            pathname: "/(auth)/(modals)/comments/[id]",
-                            params: {
-                                id
-                            }
-                        })}>
-                            <Text>Mostrar</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.commentsTitle}>Comentarios</Text>
-                        {commentList?.data && (
-                            commentList.data.map((commentData) => (
-                                <View key={commentData.id} style={styles.comment}>
-                                    <Text style={styles.commentAuthor}>{commentData.user.username}</Text>
-                                    <Text style={styles.commentDate}>{commentData.created.toString() ?? ""}</Text>
-                                    <Text style={styles.commentText}>{commentData.content}</Text>
-                                </View>
-                            ))
-                        )}
+                        <Text style={styles.commentsTitle}>Ubicacion</Text>
                         <MapComponent lat={placeDetail.position.coordinates[0]} lon={placeDetail.position.coordinates[1]} />
                     </View>
                 </ScrollView>
