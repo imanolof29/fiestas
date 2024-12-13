@@ -1,9 +1,9 @@
 import axiosInstance from "@/api";
+import { MapComponent } from "@/components/MapComponent";
 import { useCommentList } from "@/hooks/api/comment.hook";
 import { usePlaceDetail } from "@/hooks/api/place.hook";
 import { useLocalSearchParams, useRouter } from "expo-router/build/hooks";
 import { Clock, Music, Send, Star } from "lucide-react-native";
-import { useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native"
 
 const PlaceDetails = () => {
@@ -12,15 +12,9 @@ const PlaceDetails = () => {
 
     const { id } = useLocalSearchParams<{ id: string }>()
 
-    const [comment, setComment] = useState<string>("")
-
     const { data: placeDetail, isLoading: isPlaceLoading } = usePlaceDetail(id)
 
     const { data: commentList, isLoading: isCommentListLoading } = useCommentList(id)
-
-    async function postComment() {
-        return await axiosInstance.post("comments/create", { placeId: id, content: comment })
-    }
 
     return (
         <View style={styles.container}>
@@ -57,12 +51,6 @@ const PlaceDetails = () => {
                             <Text>Mostrar</Text>
                         </TouchableOpacity>
                         <Text style={styles.commentsTitle}>Comentarios</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <TextInput value={comment} placeholder="Escribe un comentario" onChangeText={setComment} />
-                            <TouchableOpacity onPress={async () => await postComment()}>
-                                <Send />
-                            </TouchableOpacity>
-                        </View>
                         {commentList?.data && (
                             commentList.data.map((commentData) => (
                                 <View key={commentData.id} style={styles.comment}>
@@ -72,6 +60,7 @@ const PlaceDetails = () => {
                                 </View>
                             ))
                         )}
+                        <MapComponent lat={placeDetail.position.coordinates[0]} lon={placeDetail.position.coordinates[1]} />
                     </View>
                 </ScrollView>
             ) : (<ActivityIndicator />)}

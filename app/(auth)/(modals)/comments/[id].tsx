@@ -4,18 +4,42 @@ import {
     StyleSheet,
     FlatList,
     KeyboardAvoidingView,
-    Platform
+    Platform,
+    TextInput,
+    SafeAreaView,
+    TouchableOpacity,
+    Alert
 } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { useCommentList } from '@/hooks/api/comment.hook';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useCommentList, usePostComment } from '@/hooks/api/comment.hook';
 import { CommentDto } from '@/types/comment';
 import { timeSince } from '../../../../utils/ago.utility';
+import { useEffect, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 const PostComment = () => {
 
     const { id } = useLocalSearchParams<{ id: string }>()
 
+    const router = useRouter()
+
+    const [comment, setComment] = useState<string>("")
+
     const { data, isLoading, error } = useCommentList(id)
+
+    const { handleSubmit, isSuccess, error: postError } = usePostComment()
+
+    useEffect(() => {
+        if (isSuccess) {
+            router.back()
+        }
+    }, [isSuccess])
+
+    useEffect(() => {
+        if (postError) {
+            Alert.alert("Algo salio mal")
+        }
+    }, [postError])
 
     const renderComment = ({ item }: { item: CommentDto }) => {
         return (
@@ -41,48 +65,32 @@ const PostComment = () => {
                     contentContainerStyle={styles.commentsList}
                 />
             )}
-
+            <SafeAreaView>
+                <View style={{ position: "absolute", flexDirection: "row", bottom: 100, alignItems: "center", paddingHorizontal: 10, gap: 10 }}>
+                    <TextInput style={styles.inputField} value={comment} onChangeText={setComment} />
+                    <TouchableOpacity onPress={() => handleSubmit({ placeId: id, content: comment })}>
+                        <Ionicons name='send' size={24} />
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
         </KeyboardAvoidingView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        width: "100%",
+        height: "100%",
         backgroundColor: '#fff',
     },
     commentsList: {
         padding: 15,
-    },
-    commentContainer: {
-        flexDirection: 'row',
-        marginBottom: 15,
-    },
-    commentContent: {
-        flex: 1,
-    },
-    avatar: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        marginRight: 10,
-    },
-    userName: {
-        fontWeight: 'bold',
-        marginBottom: 2,
     },
     comment: {
         marginBottom: 16,
     },
     commentText: {
         fontSize: 14,
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderTopWidth: 1,
-        borderTopColor: '#ccc',
-        padding: 10,
     },
     inputField: {
         flex: 1,
