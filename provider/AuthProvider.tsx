@@ -19,6 +19,7 @@ type AuthProps = {
     session: Session | null;
     login: (email: string, password: string) => Promise<boolean>;
     logout: () => Promise<void>;
+    register: (firstName: string, lastName: string, username: string, email: string, password: string) => Promise<boolean>
     isAuthenticated: boolean;
     isLoading: boolean;
 }
@@ -31,6 +32,7 @@ const REFRESH_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes before expiration
 const AuthContext = createContext<AuthProps>({
     session: null,
     login: async () => false,
+    register: async () => false,
     logout: async () => { },
     isAuthenticated: false,
     isLoading: true
@@ -138,6 +140,30 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         }
     };
 
+    const register = async (firstName: string, lastName: string, username: string, email: string, password: string): Promise<boolean> => {
+        try {
+            const response = await axiosInstance.post<Session>('/auth/create', { firstName, lastName, username, email, password });
+
+            if (response.data) {
+                const newSession = response.data;
+
+                // Save session
+                await SecureStore.setItemAsync(SESSION_KEY, JSON.stringify(newSession));
+                setSession(newSession);
+
+                // Update axios default header
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newSession.accessToken}`;
+
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error('Login failed:', error);
+            return false;
+        }
+    }
+
     // Logout method
     const logout = async () => {
         // Simply clear local session and storage
@@ -158,7 +184,8 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
                 login,
                 logout,
                 isAuthenticated,
-                isLoading
+                isLoading,
+                register
             }}
         >
             {children}
