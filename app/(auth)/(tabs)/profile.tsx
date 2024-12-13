@@ -84,7 +84,7 @@ export default function ProfileScreen() {
         } as any);
 
         try {
-            const response = await axiosInstance.post("http://192.168.68.107:3000/users/profile-picture", formData, {
+            const response = await axiosInstance.post(`/users/profile-picture`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
