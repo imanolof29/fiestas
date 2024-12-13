@@ -43,9 +43,7 @@ export default function HomeScreen() {
   }
 
   const handleLoadMore = () => {
-    console.log("LOADING....")
     if (hasNextPage) {
-      console.log("LETSGOOOOOOOOOOOO")
       fetchNextPage()
     }
   }

@@ -30,7 +30,7 @@ export const usePlaceDetail = (id: string) => useQuery({
 })
 
 export const usePlaceList = (latitude: number, longitude: number, radius: number) => {
-    const [limit, setLimit] = useState<number>(10)
+    const [limit, setLimit] = useState<number>(5)
 
     const query = useInfiniteQuery(
         ['places', latitude, longitude, radius, limit],
