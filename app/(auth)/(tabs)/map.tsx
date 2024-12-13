@@ -2,9 +2,10 @@ import { useEffect } from "react";
 import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
-import { usePlaceList } from "@/api/places";
+
 import { PlaceDto } from "@/types/place";
 import { useLocation } from "@/provider/LocationProvider";
+import { usePlacesList } from "@/hooks/api/place.hook";
 
 
 export default function FiestaMap() {
@@ -15,7 +16,7 @@ export default function FiestaMap() {
         getCurrentLocation();
     }, []);
 
-    const { data, isLoading, error } = usePlaceList(
+    const { data, isLoading, error } = usePlacesList(
         location?.coords.latitude ?? 0,
         location?.coords.longitude ?? 0,
         radius

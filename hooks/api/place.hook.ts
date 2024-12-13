@@ -1,7 +1,7 @@
 import { getPlaceDetail, getPlacesByLocation } from "@/api/places"
 import { PaginationDto } from "@/types/pagination"
 import { PlaceDto } from "@/types/place"
-import { useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 
 export const usePlacesList = (latitude: number, longitude: number, radius: number) => {
@@ -28,3 +28,26 @@ export const usePlaceDetail = (id: string) => useQuery({
     queryKey: ["place", id],
     queryFn: () => getPlaceDetail(id)
 })
+
+export const usePlaceList = (latitude: number, longitude: number, radius: number) => {
+    const [limit, setLimit] = useState<number>(10)
+
+    const query = useInfiniteQuery(
+        ['places', latitude, longitude, radius, limit],
+        ({ pageParam = 0 }) => getPlacesByLocation(pageParam, limit, latitude, longitude, radius), // Paginación con pageParam
+        {
+            getNextPageParam: (lastPage, pages) => {
+                return lastPage.data.length === limit ? pages.length + 1 : undefined; // Si hay más resultados, carga la siguiente página
+            },
+            getPreviousPageParam: (firstPage, pages) => {
+                return pages.length > 1 ? pages.length - 1 : undefined; // Si existe, permite ir hacia atrás
+            }
+        }
+    );
+
+    return {
+        ...query,
+        limit,
+        setLimit
+    };
+};

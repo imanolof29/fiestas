@@ -1,7 +1,8 @@
-import { usePlaceList } from '@/api/places';
+
 import { Header } from '@/components/Header';
 import { PlaceCard } from '@/components/PlaceCardComponent';
 import { PlaceCardLoadingComponent } from '@/components/PlaceCardLoadingComponent';
+import { usePlaceList } from '@/hooks/api/place.hook';
 import { useLocation } from '@/provider/LocationProvider';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
@@ -26,7 +27,7 @@ export default function HomeScreen() {
     getCurrentLocation();
   }, []);
 
-  const { data, isLoading, error } = usePlaceList(
+  const { data, isLoading, error, hasNextPage, fetchNextPage } = usePlaceList(
     location?.coords.latitude ?? 0,
     location?.coords.longitude ?? 0,
     radius
@@ -39,6 +40,14 @@ export default function HomeScreen() {
   const applyRadiusChange = () => {
     setRadius(tempRadius)
     handleClosePress()
+  }
+
+  const handleLoadMore = () => {
+    console.log("LOADING....")
+    if (hasNextPage) {
+      console.log("LETSGOOOOOOOOOOOO")
+      fetchNextPage()
+    }
   }
 
   const LoadingView: React.FC = () => (
@@ -59,10 +68,12 @@ export default function HomeScreen() {
       )}
       {data && (
         <FlatList
-          data={data.data}
+          data={data.pages.flatMap(page => page.data)}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <PlaceCard place={item} />}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
         />
       )}
       {isLoading && <LoadingView />}

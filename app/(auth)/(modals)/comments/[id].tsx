@@ -55,7 +55,7 @@ const PostComment = () => {
         <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            keyboardVerticalOffset={80}
+            keyboardVerticalOffset={20}
         >
             {data && (
                 <FlatList
@@ -66,7 +66,7 @@ const PostComment = () => {
                 />
             )}
             <SafeAreaView>
-                <View style={{ position: "absolute", flexDirection: "row", bottom: 100, alignItems: "center", paddingHorizontal: 10, gap: 10 }}>
+                <View style={styles.inputContainer}>
                     <TextInput style={styles.inputField} value={comment} onChangeText={setComment} />
                     <TouchableOpacity onPress={() => handleSubmit({ placeId: id, content: comment })}>
                         <Ionicons name='send' size={24} />
@@ -91,6 +91,15 @@ const styles = StyleSheet.create({
     },
     commentText: {
         fontSize: 14,
+    },
+    inputContainer: {
+        position: "absolute",
+        backgroundColor: 'white',
+        flexDirection: "row",
+        bottom: 100,
+        alignItems: "center",
+        paddingHorizontal: 10,
+        gap: 10
     },
     inputField: {
         flex: 1,
