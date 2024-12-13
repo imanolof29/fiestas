@@ -4,28 +4,19 @@ import { PlaceCard } from '@/components/PlaceCardComponent';
 import { PlaceCardLoadingComponent } from '@/components/PlaceCardLoadingComponent';
 import { usePlaceList } from '@/hooks/api/place.hook';
 import { useLocation } from '@/provider/LocationProvider';
-import { Ionicons } from '@expo/vector-icons';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import Slider from '@react-native-community/slider';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
+import { FlatList, View, StyleSheet, Text } from 'react-native';
 
 export default function HomeScreen() {
-  const { location, radius, getCurrentLocation, setRadius } = useLocation();
 
-  const [tempRadius, setTempRadius] = useState(Math.round(radius))
+  const router = useRouter()
 
-  const snapPoints = useMemo(() => ['35%'], [])
-
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
-  const handleOpenPress = () => bottomSheetRef.current?.expand()
-
-  const handleClosePress = () => bottomSheetRef.current?.close()
+  const { location, radius, getCurrentLocation } = useLocation();
 
   useEffect(() => {
     getCurrentLocation();
-  }, []);
+  }, [radius]);
 
   const { data, isLoading, error, hasNextPage, fetchNextPage } = usePlaceList(
     location?.coords.latitude ?? 0,
@@ -33,13 +24,10 @@ export default function HomeScreen() {
     radius
   );
 
-  const handleRadiusChange = (distance: number) => {
-    setTempRadius(Math.round(distance))
-  };
-
-  const applyRadiusChange = () => {
-    setRadius(tempRadius)
-    handleClosePress()
+  const handleOpenPress = () => {
+    router.push({
+      pathname: "/(auth)/(modals)/filter"
+    })
   }
 
   const handleLoadMore = () => {
@@ -75,7 +63,7 @@ export default function HomeScreen() {
         />
       )}
       {isLoading && <LoadingView />}
-      <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} index={-1}>
+      {/* <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} index={-1}>
         <BottomSheetView style={{ flex: 1 }}>
           <View style={styles.contentContainer}>
             <TouchableOpacity onPress={handleClosePress} style={styles.closeButton}>
@@ -99,7 +87,7 @@ export default function HomeScreen() {
             </View>
           </View>
         </BottomSheetView>
-      </BottomSheet>
+      </BottomSheet> */}
     </View>
   );
 }

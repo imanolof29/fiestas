@@ -9,7 +9,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { LocationProvider } from '@/provider/LocationProvider';
 import * as Notifications from 'expo-notifications';
 import { NotificationProvider } from '@/provider/NotificationProvider';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const queryClient = new QueryClient()
 
@@ -91,6 +90,13 @@ const InitialLayout = () => {
           )
         }}
       />
+      <Stack.Screen
+        name='(auth)/(modals)/filter'
+        options={{
+          presentation: "modal",
+          headerTitle: "Filtrar"
+        }}
+      />
     </Stack>
   );
 };
@@ -101,9 +107,7 @@ const RootLayoutNav = () => {
       <NotificationProvider>
         <LocationProvider>
           <QueryClientProvider client={queryClient}>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <InitialLayout />
-            </GestureHandlerRootView>
+            <InitialLayout />
           </QueryClientProvider>
         </LocationProvider>
       </NotificationProvider>
