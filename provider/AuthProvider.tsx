@@ -1,7 +1,8 @@
+// provider/AuthProvider.tsx
 import { createContext, useContext, useEffect, useState } from "react"
 import * as SecureStore from 'expo-secure-store';
-import axios from "axios";
 import axiosInstance from "@/api";
+import { useRouter } from 'expo-router'; // Importamos el router para navegar
 
 const SESION_KEY = 'session-key'
 
@@ -13,7 +14,7 @@ type Session = {
 
 type AuthProps = {
     session: Session | null
-    onLogin: (email: string, password: string) => Promise<any>
+    onLogin: (email: string, password: string) => Promise<void>
     onLogout: () => Promise<void>
     initialized: boolean
 }
@@ -25,9 +26,9 @@ export function useAuth() {
 }
 
 export const AuthProvider = ({ children }: any) => {
-
     const [session, setSession] = useState<Session | null>(null)
     const [initialized, setInitialized] = useState(false)
+    const router = useRouter(); // Lo utilizaremos para navegar cuando se cambie el estado
 
     useEffect(() => {
         const loadSession = async () => {
@@ -35,7 +36,6 @@ export const AuthProvider = ({ children }: any) => {
                 const data = await SecureStore.getItemAsync(SESION_KEY);
                 if (data) {
                     const storedSession = JSON.parse(data) as Session;
-
                     if (storedSession) {
                         setSession(storedSession);
                         axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${storedSession.accessToken}`;
@@ -56,24 +56,29 @@ export const AuthProvider = ({ children }: any) => {
         try {
             const result = await axiosInstance.post<Session>('/auth/login', { email, password })
             if (!result.data) return
-            await SecureStore.setItem(SESION_KEY, JSON.stringify(result.data))
+            await SecureStore.setItemAsync(SESION_KEY, JSON.stringify(result.data))
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${result.data.accessToken}`;
             setSession(result.data)
         } catch (e) {
-            //No se esta throweando el error, con lo cual al entrar al catch imprime el error y termina la funcion
-            //Como no estas lanzando ninguna excepcion, en la pagina del login la funcion onLoginPress interpreta que no hay ningun fallo y navega a la pagina home
-
-            //DEBERIAS lanzar una excepcion para recogerla en el try/catch del login
             console.log(e)
             throw e;
         }
     }
 
     const handleLogout = async () => {
-        setSession(null)
+        // Eliminar del storage email, accessToken, refreshToken
         await SecureStore.deleteItemAsync(SESION_KEY)
         axiosInstance.defaults.headers.common['Authorization'] = ''
+        setSession(null) 
     }
+
+    // Cada vez que session cambia si session es null y estamos inicializados, navegar a login
+    useEffect(() => {
+        if (initialized && !session) {
+
+            router.replace('/(public)/login');
+        }
+    }, [session, initialized])
 
     const value = { initialized, onLogin: handleLogin, session, onLogout: handleLogout }
 
