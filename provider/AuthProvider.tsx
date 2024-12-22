@@ -18,6 +18,7 @@ type JwtPayload = {
 type AuthProps = {
     session: Session | null;
     login: (email: string, password: string) => Promise<boolean>;
+    signInWithGoogle: (token: string) => Promise<void>;
     logout: () => Promise<void>;
     register: (firstName: string, lastName: string, username: string, email: string, password: string) => Promise<boolean>
     isAuthenticated: boolean;
@@ -32,6 +33,7 @@ const REFRESH_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes before expiration
 const AuthContext = createContext<AuthProps>({
     session: null,
     login: async () => false,
+    signInWithGoogle: async () => { },
     register: async () => false,
     logout: async () => { },
     isAuthenticated: false,
@@ -115,6 +117,25 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         }
     };
 
+    const signInWithGoogle = async (idToken: string) => {
+        try {
+            const response = await axiosInstance.post<Session>('/auth/google', { idToken });
+
+            if (response.data) {
+                const newSession = response.data;
+
+                // Save session
+                await SecureStore.setItemAsync(SESSION_KEY, JSON.stringify(newSession));
+                setSession(newSession);
+
+                // Update axios default header
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newSession.accessToken}`;
+            }
+        } catch (error) {
+            console.error('Google sign in failed:', error);
+        }
+    }
+
     // Login method
     const login = async (email: string, password: string): Promise<boolean> => {
         try {
@@ -185,7 +206,8 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
                 logout,
                 isAuthenticated,
                 isLoading,
-                register
+                register,
+                signInWithGoogle
             }}
         >
             {children}

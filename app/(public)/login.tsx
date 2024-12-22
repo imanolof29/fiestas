@@ -3,9 +3,17 @@ import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, View, TextInput, Text, TouchableOpacity } from "react-native"
 import * as WebBrowser from "expo-web-browser"
-import * as Google from "expo-auth-session/providers/google"
+import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin"
 
 WebBrowser.maybeCompleteAuthSession()
+
+GoogleSignin.configure({
+    webClientId: "",
+    scopes: ['profile', 'email'],
+    offlineAccess: true,
+    forceCodeForRefreshToken: false,
+    iosClientId: ""
+})
 
 const Page = () => {
 
@@ -14,19 +22,19 @@ const Page = () => {
 
     const [loading, setLoading] = useState(false)
 
-    const { login } = useAuth()
+    const { login, signInWithGoogle } = useAuth()
 
-    const config = {
-        webClientId: "",
-        iosClientId: "",
-        androidClientId: "",
+    const googleSignIn = async () => {
+        try {
+            await GoogleSignin.hasPlayServices()
+            const user = await GoogleSignin.signIn()
+            if (user.data?.idToken) {
+                signInWithGoogle(user.data.idToken)
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
-
-    const [response, request, promptAsync] = Google.useIdTokenAuthRequest({
-        webClientId: config.webClientId,
-        iosClientId: config.iosClientId,
-        androidClientId: config.androidClientId,
-    })
 
     const handleSubmit = () => {
         login(email, password)
@@ -39,9 +47,11 @@ const Page = () => {
             <TouchableOpacity onPress={handleSubmit}>
                 <Text>Iniciar sesion</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => promptAsync()}>
-                <Text>Iniciar sesion con google</Text>
-            </TouchableOpacity>
+            <GoogleSigninButton
+                size={GoogleSigninButton.Size.Wide}
+                color={GoogleSigninButton.Color.Dark}
+                onPress={googleSignIn}
+            />
             <Link href={"/(public)/register"} style={styles.button} asChild>
                 <Text>Crear cuenta</Text>
             </Link>
