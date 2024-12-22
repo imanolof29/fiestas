@@ -9,9 +9,7 @@ import { useEffect } from 'react';
 import { FlatList, View, StyleSheet, Text } from 'react-native';
 
 export default function HomeScreen() {
-
-  const router = useRouter()
-
+  const router = useRouter();
   const { location, radius, getCurrentLocation } = useLocation();
 
   useEffect(() => {
@@ -27,14 +25,14 @@ export default function HomeScreen() {
   const handleOpenPress = () => {
     router.push({
       pathname: "/(auth)/(modals)/filter"
-    })
-  }
+    });
+  };
 
   const handleLoadMore = () => {
     if (hasNextPage) {
-      fetchNextPage()
+      fetchNextPage();
     }
-  }
+  };
 
   const LoadingView: React.FC = () => (
     <View style={{ flex: 1 }}>
@@ -44,96 +42,64 @@ export default function HomeScreen() {
     </View>
   );
 
+  const EmptyResult = () => (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text style={{ fontSize: 16, color: '#666' }}>
+        No se encontraron lugares cercanos en este radio
+      </Text>
+      <Text style={{ fontSize: 14, color: '#999', marginTop: 8 }}>
+        Intenta aumentar el radio de búsqueda
+      </Text>
+    </View>
+  );
+
+  const ErrorView = () => (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text style={{ fontSize: 16, color: '#666' }}>
+        Ha ocurrido un error al cargar los lugares
+      </Text>
+      <Text style={{ fontSize: 14, color: '#999', marginTop: 8 }}>
+        Por favor, intenta nuevamente más tarde
+      </Text>
+    </View>
+  );
+
+  const renderContent = () => {
+    if (isLoading) {
+      return <LoadingView />;
+    }
+
+    if (error) {
+      return <ErrorView />;
+    }
+
+    if (!data || data.pages.flatMap(page => page.data).length === 0) {
+      return <EmptyResult />;
+    }
+
+    return (
+      <FlatList
+        data={data.pages.flatMap(page => page.data)}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <PlaceCard place={item} />}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+      />
+    );
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <Header onFilterClick={handleOpenPress} />
       {location && (
         <View style={{ padding: 16 }}>
-          <Text style={{ color: '#333' }}>Mostrando a {radius / 1000}km de tu ubicacion</Text>
+          <Text style={{ color: "#333" }}>
+            Mostrando a {radius / 1000}km de tu ubicación
+          </Text>
         </View>
       )}
-      {data && (
-        <FlatList
-          data={data.pages.flatMap(page => page.data)}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <PlaceCard place={item} />}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-        />
-      )}
-      {isLoading && <LoadingView />}
-      {/* <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} index={-1}>
-        <BottomSheetView style={{ flex: 1 }}>
-          <View style={styles.contentContainer}>
-            <TouchableOpacity onPress={handleClosePress} style={styles.closeButton}>
-              <Ionicons style={styles.closeButtonIcon} name='close' />
-            </TouchableOpacity>
-            <View style={{ flex: 1, padding: 16 }}>
-              <Text style={styles.title}>Filtrar por distancia</Text>
-              <View style={styles.filterSection}>
-                <Text style={styles.sectionTitle}>Distancia: {tempRadius / 1000} km</Text>
-                <Slider
-                  value={tempRadius}
-                  onValueChange={handleRadiusChange}
-                  minimumValue={1000}
-                  maximumValue={200000}
-                  step={1}
-                />
-              </View>
-              <TouchableOpacity onPress={applyRadiusChange} style={styles.filterButton}>
-                <Text style={{ color: 'white', fontSize: 18, fontWeight: '600', textAlign: 'center' }}>Aplicar filtros</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </BottomSheetView>
-      </BottomSheet> */}
+      {renderContent()}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  contentContainer: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  filterSection: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  filterButton: {
-    padding: 10,
-    backgroundColor: '#FF4500',
-    borderRadius: 10,
-    color: 'white',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'transparent',
-    padding: 10,
-    borderRadius: 50,
-  },
-  closeButtonIcon: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-  }
-})
-
