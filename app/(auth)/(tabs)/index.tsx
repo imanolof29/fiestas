@@ -6,7 +6,7 @@ import { usePlaceList } from '@/hooks/api/place.hook';
 import { useLocation } from '@/provider/LocationProvider';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { FlatList, View, StyleSheet, Text } from 'react-native';
+import { FlatList, View, StatusBar, Text, SafeAreaView, Platform } from 'react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -91,6 +91,12 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      <SafeAreaView
+        style={{
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+          backgroundColor: '#111'
+        }}
+      />
       <Header onFilterClick={handleOpenPress} />
       {location && (
         <View style={{ padding: 16 }}>
