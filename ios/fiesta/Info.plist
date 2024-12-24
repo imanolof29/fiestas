@@ -32,13 +32,9 @@
 			</array>
 		</dict>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>OAuthRedirect</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.imanolortiz.fiesta</string>
+				<string>com.googleusercontent.apps.1011914220034-g6hp7vcv2e3vjoa4bcqpfueqa2fh687j</string>
 			</array>
 		</dict>
 	</array>
