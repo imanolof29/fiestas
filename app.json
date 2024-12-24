@@ -29,7 +29,7 @@
       "package": "com.imanolortiz.fiesta",
       "config": {
         "googleMaps": {
-          "apiKey": ""
+          "apiKey": "AIzaSyCoNgY-eSslN42rOxlt0QA42Q6Y51H7uu4"
         }
       }
     },
@@ -64,6 +64,12 @@
           "color": "#ffffff",
           "defaultChannel": "default",
           "enableBackgroundRemoteNotifications": false
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.1011914220034-g6hp7vcv2e3vjoa4bcqpfueqa2fh687j"
         }
       ],
       "expo-secure-store"

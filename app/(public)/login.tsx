@@ -8,11 +8,11 @@ import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/go
 WebBrowser.maybeCompleteAuthSession()
 
 GoogleSignin.configure({
-    webClientId: "",
+    webClientId: "1011914220034-g1i51hc2l26qjjltppqopb2cu63ti10p.apps.googleusercontent.com",
     scopes: ['profile', 'email'],
     offlineAccess: true,
     forceCodeForRefreshToken: false,
-    iosClientId: ""
+    iosClientId: "1011914220034-g6hp7vcv2e3vjoa4bcqpfueqa2fh687j.apps.googleusercontent.com"
 })
 
 const Page = () => {
