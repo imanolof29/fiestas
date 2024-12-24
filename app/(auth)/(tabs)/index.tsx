@@ -28,6 +28,12 @@ export default function HomeScreen() {
     });
   };
 
+  const handleSearchPress = () => {
+    router.push({
+      pathname: "/(auth)/search"
+    });
+  }
+
   const handleLoadMore = () => {
     if (hasNextPage) {
       fetchNextPage();
@@ -97,7 +103,7 @@ export default function HomeScreen() {
           backgroundColor: '#111'
         }}
       />
-      <Header onFilterClick={handleOpenPress} />
+      <Header onSearchClick={handleSearchPress} onFilterClick={handleOpenPress} />
       {location && (
         <View style={{ padding: 16 }}>
           <Text style={{ color: "#333" }}>

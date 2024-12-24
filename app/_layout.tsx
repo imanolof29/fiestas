@@ -91,6 +91,12 @@ const InitialLayout = () => {
         }}
       />
       <Stack.Screen
+        name='(auth)/search'
+        options={{
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
         name='(auth)/(modals)/filter'
         options={{
           presentation: "modal",

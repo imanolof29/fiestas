@@ -1,10 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { Bell, ChevronDown, Filter, Menu, Search } from "lucide-react-native";
+import { Bell, ChevronDown, Filter, Search } from "lucide-react-native";
 import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from "react-native"
 import { TextInput } from "react-native";
 
 interface HeaderProperties {
     onFilterClick: () => void
+    onSearchClick: () => void
 }
 
 const styles = StyleSheet.create({
@@ -87,7 +88,7 @@ export const Header = (properties: HeaderProperties) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.searchContainer}>
+                <TouchableOpacity style={styles.searchContainer} onPress={properties.onSearchClick}>
                     <Search size={20} color="#FFF" style={{ marginRight: 8 }} />
                     <TextInput
                         placeholder="Buscar cerca de ti"
@@ -97,7 +98,7 @@ export const Header = (properties: HeaderProperties) => {
                     <TouchableOpacity onPress={properties.onFilterClick} style={styles.filterButton}>
                         <Filter size={20} color="#FFF" />
                     </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     );
