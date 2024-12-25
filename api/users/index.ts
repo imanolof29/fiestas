@@ -6,3 +6,8 @@ export const uploadUserProfileImage = async (file: Blob) => {
     const response = await axiosInstance.post('/users/profile-picture', formdata)
     return response.data
 }
+
+export const registerPushNotificationToken = async (token: string) => {
+    const response = await axiosInstance.post('/users/push-notification-token', { token })
+    return response.data
+}
