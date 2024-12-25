@@ -1,4 +1,5 @@
 import { usePurchaseList } from "@/hooks/api/purchase.hook";
+import { Link } from "expo-router";
 import { FlatList, Text } from "react-native";
 
 export default function PurchasesScreen() {
@@ -15,7 +16,7 @@ export default function PurchasesScreen() {
             data={data?.pages.flatMap(page => page.data)}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <Text>{item.eventId}</Text>}
+            renderItem={({ item }) => <Link href={`/(auth)/purchase-details/${item.id}`} asChild><Text>{item.eventId}</Text></Link>}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5}
         />

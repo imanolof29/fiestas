@@ -1,5 +1,5 @@
-import { getPurchases } from "@/api/purchases"
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { getPurchaseDetail, getPurchases } from "@/api/purchases"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 
 export const usePurchaseList = () => {
@@ -25,3 +25,8 @@ export const usePurchaseList = () => {
     };
 
 }
+
+export const usePurchaseDetail = (id: string) => useQuery({
+    queryKey: ["purchase", id],
+    queryFn: () => getPurchaseDetail(id)
+})

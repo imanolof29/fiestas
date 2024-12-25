@@ -10,6 +10,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        title: "Entradas",
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
       }}>

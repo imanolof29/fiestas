@@ -14,3 +14,8 @@ export const getPurchases = async (
     })
     return response.data
 }
+
+export const getPurchaseDetail = async (id: string) => {
+    const response = await axiosInstance.get<PurchaseDto>(`/purchases/pick/${id}`)
+    return response.data
+}

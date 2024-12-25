@@ -93,6 +93,7 @@ const InitialLayout = () => {
       <Stack.Screen
         name='(auth)/search'
         options={{
+          title: 'Buscar',
           headerShown: false
         }}
       />
@@ -101,6 +102,14 @@ const InitialLayout = () => {
         options={{
           presentation: "modal",
           headerTitle: "Filtrar"
+        }}
+      />
+      <Stack.Screen
+        name="(auth)/purchase-details/[id]"
+        options={{
+          headerBackTitle: 'Entradas',
+          title: 'Detalles',
+          headerShown: true
         }}
       />
     </Stack>
