@@ -4,4 +4,5 @@ export interface PurchaseDto {
     eventId: string
     purchaseDate: Date
     quantity: number
+    qrCode: string
 }

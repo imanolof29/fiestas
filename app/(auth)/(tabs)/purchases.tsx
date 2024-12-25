@@ -1,6 +1,6 @@
 import { usePurchaseList } from "@/hooks/api/purchase.hook";
 import { Link } from "expo-router";
-import { FlatList, Text } from "react-native";
+import { FlatList, SafeAreaView, Text } from "react-native";
 
 export default function PurchasesScreen() {
     const { data, isLoading, error, hasNextPage, fetchNextPage } = usePurchaseList()
@@ -12,14 +12,16 @@ export default function PurchasesScreen() {
     }
 
     return (
-        <FlatList
-            data={data?.pages.flatMap(page => page.data)}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <Link href={`/(auth)/purchase-details/${item.id}`} asChild><Text>{item.eventId}</Text></Link>}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-        />
+        <SafeAreaView>
+            <FlatList
+                data={data?.pages.flatMap(page => page.data)}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => <Link href={`/(auth)/purchase-details/${item.id}`} asChild><Text>{item.eventId}</Text></Link>}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+            />
+        </SafeAreaView>
     )
 
 }
