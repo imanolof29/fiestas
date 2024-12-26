@@ -2,9 +2,11 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import * as Location from 'expo-location';
 import { LocationPermission } from "@/types/location-permission";
 import { Alert } from "react-native";
+import axiosInstance from "@/api";
 
 interface LocationContextType {
     location: Location.LocationObject | null;
+    locationName: string
     errorMsg: string | null;
     radius: number
     setRadius: (value: number) => void
@@ -18,8 +20,13 @@ const LocationContext = createContext<LocationContextType | undefined>(undefined
 
 export const LocationProvider = ({ children }: PropsWithChildren) => {
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
+    const [locationName, setLocationName] = useState<string>("")
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [radius, setRadius] = useState<number>(5000)
+
+    useEffect(() => {
+        geoCoding()
+    }, [location])
 
     const requestLocationPermission = async (): Promise<LocationPermission> => {
         const { status } = await Location.requestBackgroundPermissionsAsync();
@@ -74,8 +81,19 @@ export const LocationProvider = ({ children }: PropsWithChildren) => {
         }
     };
 
+    const geoCoding = async () => {
+        if (!location) return
+        const response = await axiosInstance.get("places/geocoding", {
+            params: {
+                lat: location.coords.latitude,
+                lon: location.coords.longitude
+            }
+        })
+        setLocationName(response.data.name)
+    }
+
     return (
-        <LocationContext.Provider value={{ location, errorMsg, getCurrentLocation, radius, setRadius, checkLocationPermission, requestLocationPermission, manualPermissionRequest }}>
+        <LocationContext.Provider value={{ location, errorMsg, getCurrentLocation, radius, setRadius, checkLocationPermission, requestLocationPermission, manualPermissionRequest, locationName }}>
             {children}
         </LocationContext.Provider>
     );

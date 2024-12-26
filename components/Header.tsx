@@ -1,3 +1,4 @@
+import { useLocation } from "@/provider/LocationProvider";
 import { StatusBar } from "expo-status-bar";
 import { Bell, ChevronDown, Filter, Search } from "lucide-react-native";
 import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from "react-native"
@@ -70,6 +71,9 @@ const styles = StyleSheet.create({
 });
 
 export const Header = (properties: HeaderProperties) => {
+
+    const { locationName } = useLocation()
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar style="light" />
@@ -78,7 +82,7 @@ export const Header = (properties: HeaderProperties) => {
                     <View style={styles.locationContainer}>
                         <Text style={styles.locationLabel}>Tu ubicación</Text>
                         <TouchableOpacity style={styles.locationSelector}>
-                            <Text style={styles.locationText}>Irun, Gipuzkoa</Text>
+                            <Text style={styles.locationText}>{locationName}</Text>
                             <ChevronDown size={20} color="#FF4500" />
                         </TouchableOpacity>
                     </View>
