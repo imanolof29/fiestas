@@ -6,11 +6,14 @@ import { usePlaceList } from '@/hooks/api/place.hook';
 import { useLocation } from '@/provider/LocationProvider';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, View, StatusBar, Text, SafeAreaView, Platform } from 'react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { location, radius, getCurrentLocation } = useLocation();
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     getCurrentLocation();
@@ -107,7 +110,7 @@ export default function HomeScreen() {
       {location && (
         <View style={{ padding: 16 }}>
           <Text style={{ color: "#333" }}>
-            Mostrando a {radius / 1000}km de tu ubicación
+            {t('tabs.home.showing', { km: (radius / 1000).toString() })}
           </Text>
         </View>
       )}

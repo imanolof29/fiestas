@@ -10,7 +10,7 @@
   "tabs": {
     "home": {
       "title": "Home",
-      "showing": "Zure kokapenetik {km}km-ra erakusten"
+      "showing": "Zure kokapenetik {{km}}km-ra erakusten"
     },
     "map": {
       "title": "Mapa"
@@ -23,6 +23,7 @@
       "title": "Profila",
       "notifications": "Notifikazioak",
       "theme": "Tema",
+      "language": "Hizkuntza",
       "helpCenter": "Help Center",
       "termsAndConditions": "Baldintzak eta terminoak",
       "logout": "Saioa amaitu"
@@ -32,7 +33,8 @@
     "location": "Kokapena",
     "photos": "Argazkiak",
     "comments": "Iruzkinak",
-    "seeAll": "Guztiak ikusi"
+    "seeAll": "Guztiak ikusi",
+    "noComments": "Oraindik ez daude iruzkinik..."
   },
   "comments": {
     "title": "Iruzkinak",
@@ -42,7 +44,7 @@
   "filter": {
     "title": "Filtratu",
     "subtitle": "Filtratu distantziaren arabera",
-    "distance": "Distantzia: {km}km",
+    "distance": "Distantzia: {{km}}km",
     "apply": "Filtroak aplikatu"
   }
 }

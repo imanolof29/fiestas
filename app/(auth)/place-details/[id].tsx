@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Clock, Music, MapPin, Star, DollarSign, Users, Camera } from "lucide-react-native";
+import { Clock, Music, Star, DollarSign, Users, Camera } from "lucide-react-native";
 import { usePlaceDetail } from "@/hooks/api/place.hook";
 import { useCommentList } from "@/hooks/api/comment.hook";
 import { MapComponent } from "@/components/MapComponent";
+import { useTranslation } from 'react-i18next';
 
 const { width } = Dimensions.get('window');
 
 const PlaceDetails = () => {
+    const { t } = useTranslation()
     const router = useRouter();
     const { id } = useLocalSearchParams<{ id: string }>();
     const { data: placeDetail, isLoading: isPlaceLoading } = usePlaceDetail(id);
@@ -50,17 +52,17 @@ const PlaceDetails = () => {
                     </View>
                 </View>
 
-                <Text style={styles.sectionTitle}>About</Text>
+                <Text style={styles.sectionTitle}>{t('placeDetail.about')}</Text>
                 <Text style={styles.description}>
                     {showFullDescription ? placeDetail.description : truncatedDescription}
                 </Text>
                 {!showFullDescription && (
                     <TouchableOpacity onPress={() => setShowFullDescription(true)}>
-                        <Text style={styles.readMore}>Read more</Text>
+                        <Text style={styles.readMore}>{t('placeDetail.readMore')}</Text>
                     </TouchableOpacity>
                 )}
 
-                <Text style={styles.sectionTitle}>Location</Text>
+                <Text style={styles.sectionTitle}>{t('placeDetail.location')}</Text>
                 <View style={styles.mapContainer}>
                     <MapComponent lat={placeDetail.position.coordinates[0]} lon={placeDetail.position.coordinates[1]} />
                 </View>
@@ -78,7 +80,7 @@ const PlaceDetails = () => {
 
                 <View style={styles.commentsContainer}>
                     <View style={styles.commentHeader}>
-                        <Text style={styles.sectionTitle}>Comentarios</Text>
+                        <Text style={styles.sectionTitle}>{t('placeDetail.photos')}</Text>
                         <TouchableOpacity
                             style={styles.viewAllButton}
                             onPress={() => router.push({
@@ -101,7 +103,7 @@ const PlaceDetails = () => {
                             </View>
                         ))
                     ) : (
-                        <Text style={styles.noComments}>Sin comentarios...</Text>
+                        <Text style={styles.noComments}>{t('placeDetail.noComments')}</Text>
                     )}
                 </View>
             </View>

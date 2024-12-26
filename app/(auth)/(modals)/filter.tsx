@@ -2,11 +2,14 @@ import { useLocation } from "@/provider/LocationProvider";
 import Slider from "@react-native-community/slider"
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
 
 const Page = () => {
 
     const router = useRouter()
+
+    const { t } = useTranslation()
 
     const { radius, setRadius } = useLocation();
 
@@ -36,7 +39,7 @@ const Page = () => {
                     />
                 </View>
                 <TouchableOpacity onPress={applyRadiusChange} style={styles.filterButton}>
-                    <Text style={{ color: 'white', fontSize: 18, fontWeight: '600', textAlign: 'center' }}>Aplicar filtros</Text>
+                    <Text style={{ color: 'white', fontSize: 18, fontWeight: '600', textAlign: 'center' }}>{t('filter.apply')}</Text>
                 </TouchableOpacity>
             </View>
         </View>

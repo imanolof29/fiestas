@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '@/provider/AuthProvider';
 import axiosInstance from '@/api';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 type IconProps = {
     size: number;
@@ -53,6 +54,9 @@ const ProfileOption: React.FC<ProfileOptionProps> = ({
 
 
 export default function ProfileScreen() {
+
+    const { t } = useTranslation()
+
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
@@ -125,19 +129,19 @@ export default function ProfileScreen() {
                 <View style={styles.optionsContainer}>
                     <ProfileOption
                         icon={Bell as any}
-                        label="Notifications"
+                        label={t('tabs.profile.notifications')}
                         showToggle={true}
                         toggleValue={notificationsEnabled}
                         onToggle={setNotificationsEnabled} onPress={() => { }} />
                     <ProfileOption
                         icon={Moon as any}
-                        label="Dark Mode"
+                        label={t('tabs.profile.theme')}
                         showToggle={true}
                         toggleValue={darkModeEnabled}
                         onToggle={setDarkModeEnabled} onPress={() => { }} />
                     <ProfileOption
                         icon={HelpCircle as any}
-                        label="Idioma"
+                        label={t('tabs.profile.language')}
                         onPress={() => {
                             router.push("/(auth)/language")
                         }}

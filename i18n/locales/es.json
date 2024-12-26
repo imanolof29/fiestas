@@ -10,7 +10,7 @@
   "tabs": {
     "home": {
       "title": "Home",
-      "showing": "Mostrando a {km}km de tu ubicación"
+      "showing": "Mostrando a {{km}}km de tu ubicación"
     },
     "map": {
       "title": "Mapa"
@@ -23,26 +23,30 @@
       "title": "Perfil",
       "notifications": "Notificaciones",
       "theme": "Tema",
+      "language": "Idioma",
       "helpCenter": "Help Center",
       "termsAndConditions": "Términos y condiciones",
       "logout": "Cerrar sesión"
     }
   },
   "placeDetail": {
-    "location": "ubicación",
+    "about": "Acerca de",
+    "readMore": "Leer mas",
+    "location": "Ubicación",
     "photos": "Fotos",
     "comments": "Comentarios",
-    "seeAll": "Ver todos"
+    "seeAll": "Ver todos",
+    "noComments": "Aun no hay comentarios..."
   },
   "comments": {
     "title": "Comentarops",
-    "write": "Escribir un comentario...",
+    "write": "Escribe un comentario...",
     "ago": "Hace"
   },
   "filter": {
     "title": "Filtrar",
     "subtitle": "Filtrar por distancia",
-    "distance": "Distancia: {km}km",
+    "distance": "Distancia: {{km}}km",
     "apply": "Aplicar filtros"
   }
 }

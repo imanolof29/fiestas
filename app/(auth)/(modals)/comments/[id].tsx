@@ -10,7 +10,6 @@ import {
     TouchableOpacity,
     Alert,
     Image,
-    Pressable
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCommentList, usePostComment } from '@/hooks/api/comment.hook';
@@ -18,8 +17,10 @@ import { CommentDto } from '@/types/comment';
 import { timeSince } from '../../../../utils/ago.utility';
 import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 const PostComment = () => {
+    const { t } = useTranslation()
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
     const [comment, setComment] = useState<string>("");
@@ -77,7 +78,7 @@ const PostComment = () => {
                         style={styles.inputField}
                         value={comment}
                         onChangeText={setComment}
-                        placeholder="Escribe un comentario..."
+                        placeholder={t('comments.write')}
                         placeholderTextColor="#666"
                     />
                     <TouchableOpacity
