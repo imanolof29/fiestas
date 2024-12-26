@@ -4,6 +4,7 @@ import { useState } from "react"
 import { StyleSheet, View, TextInput, Text, TouchableOpacity } from "react-native"
 import * as WebBrowser from "expo-web-browser"
 import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin"
+import { useTranslation } from "react-i18next"
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -23,6 +24,8 @@ const Page = () => {
     const [loading, setLoading] = useState(false)
 
     const { login, signInWithGoogle } = useAuth()
+
+    const { t } = useTranslation()
 
     const googleSignIn = async () => {
         try {
@@ -45,7 +48,7 @@ const Page = () => {
             <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.inputField} />
             <TextInput secureTextEntry placeholder="Contraseña" value={password} onChangeText={setPassword} style={styles.inputField} />
             <TouchableOpacity onPress={handleSubmit}>
-                <Text>Iniciar sesion</Text>
+                <Text>{t('auth.login.signin')}</Text>
             </TouchableOpacity>
             <GoogleSigninButton
                 size={GoogleSigninButton.Size.Wide}
@@ -53,7 +56,7 @@ const Page = () => {
                 onPress={googleSignIn}
             />
             <Link href={"/(public)/register"} style={styles.button} asChild>
-                <Text>Crear cuenta</Text>
+                <Text>{t('auth.login.signup')}</Text>
             </Link>
         </View>
     )

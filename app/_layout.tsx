@@ -1,7 +1,6 @@
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/provider/AuthProvider';
 import { ActivityIndicator, TouchableOpacity } from 'react-native';
@@ -9,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LocationProvider } from '@/provider/LocationProvider';
 import * as Notifications from 'expo-notifications';
 import { NotificationProvider } from '@/provider/NotificationProvider';
+import '@/i18n';
 
 const queryClient = new QueryClient()
 
