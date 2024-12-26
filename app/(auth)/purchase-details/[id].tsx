@@ -1,6 +1,6 @@
 import { usePurchaseDetail } from '@/hooks/api/purchase.hook'
 import { useLocalSearchParams } from 'expo-router'
-import { View, Text, Image } from 'react-native'
+import { View, Image, ActivityIndicator } from 'react-native'
 
 const PurchaseDetail = () => {
 
@@ -10,13 +10,13 @@ const PurchaseDetail = () => {
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {isLoading && <ActivityIndicator />}
             {data && <Image
                 style={{ borderRadius: 20 }}
                 width={300}
                 height={300}
                 source={{ uri: data.qrCode }}
             />}
-            <Text>Detalles</Text>
         </View>
     )
 }
