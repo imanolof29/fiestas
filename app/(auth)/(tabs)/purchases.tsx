@@ -2,10 +2,14 @@ import { usePurchaseList } from "@/hooks/api/purchase.hook";
 import { PurchaseDto } from "@/types/purchase";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
-import { FlatList, StyleSheet, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { useCallback, useState } from "react";
+import { FlatList, StyleSheet, SafeAreaView, Text, TouchableOpacity, View, RefreshControl } from "react-native";
 
 export default function PurchasesScreen() {
-    const { data, isLoading, error, hasNextPage, fetchNextPage } = usePurchaseList()
+
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+
+    const { data, isLoading, error, hasNextPage, fetchNextPage, refetch } = usePurchaseList()
 
     const handleLoadMore = () => {
         if (hasNextPage) {
@@ -13,23 +17,22 @@ export default function PurchasesScreen() {
         }
     }
 
+    const handleRefresh = useCallback(async () => {
+        setIsRefreshing(true)
+        try {
+            await refetch()
+        } catch (error) {
+            console.error("Error refreshing data:", error)
+        } finally {
+            setIsRefreshing(false)
+        }
+    }, [refetch])
+
     const renderPurchaseItem = ({ item }: { item: PurchaseDto }) => {
         return (
             <Link href={`/(auth)/purchase-details/${item.id}`} asChild>
                 <TouchableOpacity style={styles.purchaseContainer}>
-                    <View style={styles.eventInfo}>
-                        <Text style={styles.eventName}>{item.event.name}</Text>
-                        <Text style={styles.eventDescription}>{item.event.description}</Text>
-                    </View>
-                    <View style={styles.purchaseInfo}>
-                        <Text style={styles.date}>
-                            {new Date(item.purchaseDate).toLocaleDateString()}
-                        </Text>
-                        <Text style={styles.quantity}>Cantidad: {item.quantity}</Text>
-                        <Text style={styles.price}>
-                            Precio: ${(item.event.price || 0) * item.quantity}
-                        </Text>
-                    </View>
+                    <Text>Compra</Text>
                 </TouchableOpacity>
             </Link>
         )
@@ -43,6 +46,12 @@ export default function PurchasesScreen() {
                 renderItem={renderPurchaseItem}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.listContent}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={handleRefresh}
+                    />
+                }
             />
         </SafeAreaView>
     )
