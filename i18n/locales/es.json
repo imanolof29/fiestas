@@ -1,0 +1,48 @@
+{
+  "auth": {
+    "login": {
+      "email": "Email",
+      "password": "Contraseña",
+      "signin": "Iniciar sesión",
+      "signup": "Crear cuenta"
+    }
+  },
+  "tabs": {
+    "home": {
+      "title": "Home",
+      "showing": "Mostrando a {km}km de tu ubicación"
+    },
+    "map": {
+      "title": "Mapa"
+    },
+    "tickets": {
+      "title": "Entradas",
+      "purchases": "Mis compras"
+    },
+    "profile": {
+      "title": "Perfil",
+      "notifications": "Notificaciones",
+      "theme": "Tema",
+      "helpCenter": "Help Center",
+      "termsAndConditions": "Términos y condiciones",
+      "logout": "Cerrar sesión"
+    }
+  },
+  "placeDetail": {
+    "location": "ubicación",
+    "photos": "Fotos",
+    "comments": "Comentarios",
+    "seeAll": "Ver todos"
+  },
+  "comments": {
+    "title": "Comentarops",
+    "write": "Escribir un comentario...",
+    "ago": "Hace"
+  },
+  "filter": {
+    "title": "Filtrar",
+    "subtitle": "Filtrar por distancia",
+    "distance": "Distancia: {km}km",
+    "apply": "Aplicar filtros"
+  }
+}

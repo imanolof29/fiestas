@@ -1,0 +1,48 @@
+{
+  "auth": {
+    "login": {
+      "email": "Posta elektronikoa",
+      "password": "Pasahitza",
+      "signin": "Saioa hasi",
+      "signup": "Kontua sortu"
+    }
+  },
+  "tabs": {
+    "home": {
+      "title": "Home",
+      "showing": "Zure kokapenetik {km}km-ra erakusten"
+    },
+    "map": {
+      "title": "Mapa"
+    },
+    "tickets": {
+      "title": "Sarrerak",
+      "purchases": "Nire erosketak"
+    },
+    "profile": {
+      "title": "Profila",
+      "notifications": "Notifikazioak",
+      "theme": "Tema",
+      "helpCenter": "Help Center",
+      "termsAndConditions": "Baldintzak eta terminoak",
+      "logout": "Saioa amaitu"
+    }
+  },
+  "placeDetail": {
+    "location": "Kokapena",
+    "photos": "Argazkiak",
+    "comments": "Iruzkinak",
+    "seeAll": "Guztiak ikusi"
+  },
+  "comments": {
+    "title": "Iruzkinak",
+    "write": "Idatzi iruzkina...",
+    "ago": "Duela"
+  },
+  "filter": {
+    "title": "Filtratu",
+    "subtitle": "Filtratu distantziaren arabera",
+    "distance": "Distantzia: {km}km",
+    "apply": "Filtroak aplikatu"
+  }
+}
