@@ -4,6 +4,7 @@ import { Camera, ChevronRight, Bell, Moon, HelpCircle, FileText, LogOut } from '
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '@/provider/AuthProvider';
 import axiosInstance from '@/api';
+import { router } from 'expo-router';
 
 type IconProps = {
     size: number;
@@ -136,8 +137,10 @@ export default function ProfileScreen() {
                         onToggle={setDarkModeEnabled} onPress={() => { }} />
                     <ProfileOption
                         icon={HelpCircle as any}
-                        label="Help Center"
-                        onPress={() => { }}
+                        label="Idioma"
+                        onPress={() => {
+                            router.push("/(auth)/language")
+                        }}
                     />
                     <ProfileOption
                         icon={FileText as any}

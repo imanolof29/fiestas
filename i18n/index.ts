@@ -22,7 +22,7 @@ const initI18n = async () => {
         compatibilityJSON: "v3",
         resources,
         lng: savedLanguage,
-        fallbackLng: "es",
+        fallbackLng: "eu",
         interpolation: {
             escapeValue: false,
         },

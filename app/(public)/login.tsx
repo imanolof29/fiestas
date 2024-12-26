@@ -45,8 +45,15 @@ const Page = () => {
 
     return (
         <View style={styles.container}>
-            <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.inputField} />
-            <TextInput secureTextEntry placeholder="Contraseña" value={password} onChangeText={setPassword} style={styles.inputField} />
+            <TextInput
+                autoCapitalize="none"
+                inputMode="email"
+                placeholder={t('auth.login.email')}
+                value={email}
+                onChangeText={setEmail}
+                style={styles.inputField}
+            />
+            <TextInput secureTextEntry placeholder={t('auth.login.password')} value={password} onChangeText={setPassword} style={styles.inputField} />
             <TouchableOpacity onPress={handleSubmit}>
                 <Text>{t('auth.login.signin')}</Text>
             </TouchableOpacity>

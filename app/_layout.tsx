@@ -112,6 +112,12 @@ const InitialLayout = () => {
           headerShown: true
         }}
       />
+      <Stack.Screen
+        name="(auth)/language"
+        options={{
+          title: "Idiomas"
+        }}
+      />
     </Stack>
   );
 };
