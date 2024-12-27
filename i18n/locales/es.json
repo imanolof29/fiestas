@@ -1,8 +1,14 @@
 {
   "auth": {
     "login": {
+      "title": "Inicia sesion en tu cuenta",
       "email": "Email",
       "password": "Contraseña",
+      "orSignIn": "O inicia sesión con",
+      "forgotPassword": "¿Olvidaste tu constraseña?",
+      "dontHaveAccount": "¿No tienes cuenta?",
+      "google": "Google",
+      "register": "Registrate",
       "signin": "Iniciar sesión",
       "signup": "Crear cuenta"
     }
