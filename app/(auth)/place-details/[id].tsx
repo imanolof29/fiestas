@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, Button } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Clock, Music, Star, DollarSign, Users, Camera } from "lucide-react-native";
@@ -27,6 +27,10 @@ const PlaceDetails = () => {
     }
 
     const truncatedDescription = placeDetail.description?.slice(0, 100) + "...";
+
+    const handleCreateClick = () => {
+        router.navigate("(auth)/create-post")
+    }
 
     return (
         <ScrollView style={styles.container}>
@@ -77,6 +81,8 @@ const PlaceDetails = () => {
                         />
                     ))}
                 </ScrollView>
+
+                <Button onPress={handleCreateClick} title="Crear publicacion" />
 
                 <View style={styles.commentsContainer}>
                     <View style={styles.commentHeader}>

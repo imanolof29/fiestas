@@ -118,6 +118,12 @@ const InitialLayout = () => {
           title: "Idiomas"
         }}
       />
+      <Stack.Screen
+        name="(auth)/create-post"
+        options={{
+          title: "Crear post"
+        }}
+      />
     </Stack>
   );
 };
