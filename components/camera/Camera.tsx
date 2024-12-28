@@ -2,17 +2,30 @@ import { CameraType, CameraView, useCameraPermissions } from "expo-camera"
 import { useRef, useState } from "react"
 import { View, StyleSheet, Text, Button, TouchableOpacity } from "react-native"
 import { PhotoPreview } from "./PhotoPreview"
-import { AntDesign } from "@expo/vector-icons"
+import { AntDesign, Ionicons } from "@expo/vector-icons"
 
 export const Camera = () => {
 
-    const [facing, setFacing] = useState<CameraType>("front")
-    const [permission, requestPermission] = useCameraPermissions()
-    const [photo, setPhoto] = useState<any>(null)
-    const cameraRef = useRef<CameraView | null>(null)
+    const [facing, setFacing] = useState<CameraType>('back');
+    const [permission, requestPermission] = useCameraPermissions();
+    const [photo, setPhoto] = useState<any>(null);
+    const cameraRef = useRef<CameraView | null>(null);
 
-    const toggleCameraFacing = () => {
-        setFacing(current => (current === 'back' ? 'front' : 'back'))
+    if (!permission) {
+        return <View />;
+    }
+
+    if (!permission.granted) {
+        return (
+            <View style={styles.container}>
+                <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+                <Button onPress={requestPermission} title="grant permission" />
+            </View>
+        );
+    }
+
+    function toggleCameraFacing() {
+        setFacing(current => (current === 'back' ? 'front' : 'back'));
     }
 
     const handleTakePhoto = async () => {
@@ -20,42 +33,37 @@ export const Camera = () => {
             const options = {
                 quality: 1,
                 base64: true,
-                exit: true
-            }
-            const takenPhoto = await cameraRef.current.takePictureAsync(options)
-            setPhoto(takenPhoto)
+                exif: false,
+            };
+            const takedPhoto = await cameraRef.current.takePictureAsync(options);
+
+            setPhoto(takedPhoto);
         }
-    }
+    };
 
-    if (!permission) {
-        return <View />
-    }
+    const handleRetakePhoto = () => setPhoto(null);
 
-    if (!permission.granted) {
-        return (
-            <View style={styles.container}>
-                <Text style={{ textAlign: 'center' }}>Necesitamos permiso para acceder a la camara</Text>
-                <Button onPress={requestPermission} title="Pedir permisos" />
-            </View>
-        )
-    }
-
-    if (photo) return <PhotoPreview photo={photo} handleRetakePhoto={handleTakePhoto} />
+    if (photo) return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto} />
 
     return (
         <View style={styles.container}>
-            <CameraView style={styles.camera} facing={facing}>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-                        <AntDesign name='retweet' size={44} color='black' />
+            <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
+                <View style={styles.topContainer}>
+                    <TouchableOpacity onPress={toggleCameraFacing}>
+                        <Ionicons name="camera-reverse-outline" size={24} color={"white"} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-                        <AntDesign name='camera' size={44} color='black' />
+                    <TouchableOpacity>
+                        <Ionicons name="flash-outline" size={24} color={"white"} />
                     </TouchableOpacity>
+                </View>
+                <View style={styles.bottomContainer}>
+                    <View style={styles.photoButtonContainer}>
+                        <TouchableOpacity style={styles.photoButton} onPress={handleTakePhoto} />
+                    </View>
                 </View>
             </CameraView>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -66,23 +74,36 @@ const styles = StyleSheet.create({
     camera: {
         flex: 1,
     },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
+    topContainer: {
+        position: "absolute",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        top: 75,
+        left: 0,
+        right: 0,
+        paddingHorizontal: 20
     },
-    button: {
-        flex: 1,
-        alignSelf: 'flex-end',
+    bottomContainer: {
+        position: "absolute",
+        bottom: 75,
+        left: 0,
+        right: 0,
         alignItems: 'center',
-        marginHorizontal: 10,
-        backgroundColor: 'gray',
-        borderRadius: 10,
     },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white',
+    photoButtonContainer: {
+        width: 85,
+        height: 85,
+        borderWidth: 2,
+        borderColor: '#eee',
+        borderRadius: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    photoButton: {
+        width: 75,
+        height: 75,
+        backgroundColor: '#eee',
+        borderRadius: 100,
     },
 });

@@ -1,7 +1,9 @@
 import { Camera } from "@/components/camera/Camera"
 
-export const Page = () => {
+const Page = () => {
     return (
         <Camera />
     )
 }
+
+export default Page

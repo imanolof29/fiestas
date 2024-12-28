@@ -121,7 +121,7 @@ const InitialLayout = () => {
       <Stack.Screen
         name="(auth)/create-post"
         options={{
-          title: "Crear post"
+          headerShown: false
         }}
       />
     </Stack>
