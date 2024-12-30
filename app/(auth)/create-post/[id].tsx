@@ -51,7 +51,7 @@ const Page = () => {
     if (photo) return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto} handleSend={async () => {
         const response = await fetch(photo.uri)
         const blob = await response.blob()
-        handleSubmit(id, blob)
+        handleSubmit(id, { uri: photo.uri, base64: photo.base64!, type: blob.type, name: "" })
     }} />
 
     return (

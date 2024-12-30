@@ -1,5 +1,6 @@
 import { createPlacePost, getPlacePosts } from "@/api/posts"
 import { PaginationDto } from "@/types/pagination"
+import { Photo } from "@/types/photo"
 import { PostDto } from "@/types/post"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
@@ -27,11 +28,11 @@ export const usePostList = (placeId: string) => {
 
 export const useCreatPlacePost = () => {
     const mutation = useMutation({
-        mutationFn: ({ placeId, photo }: { placeId: string; photo: Blob }) =>
+        mutationFn: ({ placeId, photo }: { placeId: string; photo: Photo }) =>
             createPlacePost(placeId, photo),
     });
 
-    const handleSubmit = (placeId: string, photo: Blob) => {
+    const handleSubmit = (placeId: string, photo: Photo) => {
         mutation.mutate({ placeId, photo });
     };
 
