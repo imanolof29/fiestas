@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, Button } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, Button, FlatList } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Clock, Music, Star, DollarSign, Users, Camera } from "lucide-react-native";
@@ -7,6 +7,8 @@ import { usePlaceDetail } from "@/hooks/api/place.hook";
 import { useCommentList } from "@/hooks/api/comment.hook";
 import { MapComponent } from "@/components/MapComponent";
 import { useTranslation } from 'react-i18next';
+import { usePostList } from '@/hooks/api/post.hook';
+import { PostDto } from '@/types/post';
 
 const { width } = Dimensions.get('window');
 
@@ -16,6 +18,7 @@ const PlaceDetails = () => {
     const { id } = useLocalSearchParams<{ id: string }>();
     const { data: placeDetail, isLoading: isPlaceLoading } = usePlaceDetail(id);
     const { data: commentList, isLoading: isCommentListLoading } = useCommentList(id);
+    const { data: postList, isLoading: isPostListLoading } = usePostList(id)
     const [showFullDescription, setShowFullDescription] = useState(false);
 
     if (isPlaceLoading || !placeDetail) {
@@ -33,6 +36,16 @@ const PlaceDetails = () => {
             pathname: "/(auth)/create-post/[id]",
             params: { id }
         })
+    }
+
+    const renderPostImage = ({ photo }: { photo: string }) => {
+        return (
+            <Image
+                source={{ uri: photo }}
+                style={{ width: 100, height: 100 }}
+                onLoad={() => <View style={{ width: 100, height: 100, backgroundColor: 'gray' }} />}
+            />
+        )
     }
 
 
@@ -85,6 +98,8 @@ const PlaceDetails = () => {
                         />
                     ))}
                 </ScrollView>
+
+                <FlatList horizontal data={postList?.data} renderItem={({ item }: { item: PostDto }) => renderPostImage({ photo: item.photo })} />
 
                 <Button onPress={handleCreateClick} title="Crear publicacion" />
 
