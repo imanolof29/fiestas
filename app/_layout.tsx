@@ -119,7 +119,7 @@ const InitialLayout = () => {
         }}
       />
       <Stack.Screen
-        name="(auth)/create-post"
+        name="(auth)/create-post/[id]"
         options={{
           headerShown: false
         }}

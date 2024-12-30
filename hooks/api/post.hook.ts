@@ -27,13 +27,14 @@ export const usePostList = (placeId: string) => {
 
 export const useCreatPlacePost = () => {
     const mutation = useMutation({
-        mutationFn: (properties: { placeId: string, photo: Blob }) => createPlacePost(properties.placeId, properties.photo)
-    })
+        mutationFn: ({ placeId, photo }: { placeId: string; photo: Blob }) =>
+            createPlacePost(placeId, photo),
+    });
 
     const handleSubmit = (placeId: string, photo: Blob) => {
-        mutation.mutate({ placeId, photo })
-    }
+        mutation.mutate({ placeId, photo });
+    };
 
-    return { handleSubmit, ...mutation }
+    return { handleSubmit, ...mutation };
 
 }

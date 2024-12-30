@@ -29,8 +29,12 @@ const PlaceDetails = () => {
     const truncatedDescription = placeDetail.description?.slice(0, 100) + "...";
 
     const handleCreateClick = () => {
-        router.navigate("(auth)/create-post")
+        router.push({
+            pathname: "/(auth)/create-post/[id]",
+            params: { id }
+        })
     }
+
 
     return (
         <ScrollView style={styles.container}>

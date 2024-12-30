@@ -12,7 +12,7 @@ export const getPlaceComments = async (
     limit: number = 10,
     placeId: string
 ) => {
-    const response = await axiosInstance.get<PaginationDto<CommentDto>>(`places/${placeId}/comments/find/`, {
+    const response = await axiosInstance.get<PaginationDto<CommentDto>>(`places/${placeId}/comments/find`, {
         params: {
             page,
             limit

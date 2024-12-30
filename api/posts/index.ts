@@ -10,7 +10,13 @@ export const getPlacePosts = async (
 }
 
 export const createPlacePost = async (placeId: string, image: Blob) => {
-    const formdata = new FormData()
-    const response = await axiosInstance.post(`/places/${placeId}/posts/create`, formdata)
-    return response.data
+    const formData = new FormData();
+    formData.append('file', image);
+    console.log(image)
+    const response = await axiosInstance.post(`/places/${placeId}/posts/create`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response.data;
 }
