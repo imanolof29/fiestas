@@ -12,7 +12,7 @@ export const getPlaceComments = async (
     limit: number = 10,
     placeId: string
 ) => {
-    const response = await axiosInstance.get<PaginationDto<CommentDto>>(`comments/find/${placeId}`, {
+    const response = await axiosInstance.get<PaginationDto<CommentDto>>(`places/${placeId}/comments/find/`, {
         params: {
             page,
             limit
@@ -24,6 +24,6 @@ export const getPlaceComments = async (
 export const postComment = async (
     { placeId, content }: PostCommentDto
 ) => {
-    const response = await axiosInstance.post<CommentDto>("comments/create", { placeId, content })
+    const response = await axiosInstance.post<CommentDto>(`places/${placeId}/comments/create`, { content })
     return response.data
 }

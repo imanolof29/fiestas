@@ -28,6 +28,10 @@ export const Camera = () => {
         setFacing(current => (current === 'back' ? 'front' : 'back'));
     }
 
+    const createPost = () => {
+        
+    }
+
     const handleTakePhoto = async () => {
         if (cameraRef.current) {
             const options = {
