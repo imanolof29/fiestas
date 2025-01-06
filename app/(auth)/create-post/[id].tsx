@@ -1,11 +1,11 @@
 import { CameraCapturedPicture, CameraType, CameraView, useCameraPermissions } from "expo-camera"
 import { useRef, useState } from "react"
-import { View, StyleSheet, Text, Button, TouchableOpacity } from "react-native"
+import { View, StyleSheet, Text, Button, TouchableOpacity, Alert } from "react-native"
 
 import { Ionicons } from "@expo/vector-icons"
 import { useCreatPlacePost } from "@/hooks/api/post.hook"
 import { PhotoPreview } from "@/components/camera/PhotoPreview"
-import { useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams, useRouter } from "expo-router"
 
 const Page = () => {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -13,6 +13,8 @@ const Page = () => {
     const [permission, requestPermission] = useCameraPermissions();
     const [photo, setPhoto] = useState<CameraCapturedPicture | undefined>();
     const cameraRef = useRef<CameraView | null>(null);
+
+    const navigation = useRouter()
 
     const { handleSubmit } = useCreatPlacePost()
 
@@ -49,9 +51,14 @@ const Page = () => {
     const handleRetakePhoto = () => setPhoto(undefined);
 
     if (photo) return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto} handleSend={async () => {
-        const response = await fetch(photo.uri)
-        const blob = await response.blob()
-        handleSubmit(id, { uri: photo.uri, base64: photo.base64!, type: blob.type, name: "" })
+        try {
+            const response = await fetch(photo.uri)
+            const blob = await response.blob()
+            handleSubmit(id, { uri: photo.uri, base64: photo.base64!, type: blob.type, name: "" })
+            navigation.back()
+        } catch (e) {
+            Alert.alert("Algo fue mal")
+        }
     }} />
 
     return (

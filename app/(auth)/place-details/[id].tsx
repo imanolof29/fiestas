@@ -31,6 +31,14 @@ const PlaceDetails = () => {
 
     const truncatedDescription = placeDetail.description?.slice(0, 100) + "...";
 
+    const renderCreatePostImage = () => {
+        return (
+            <TouchableOpacity style={{ width: 100, height: 100, backgroundColor: 'lightgray', justifyContent: 'center', alignItems: 'center' }} onPress={handleCreateClick}>
+                <Ionicons name='add' size={48} />
+            </TouchableOpacity>
+        )
+    }
+
     const handleCreateClick = () => {
         router.push({
             pathname: "/(auth)/create-post/[id]",
@@ -99,9 +107,12 @@ const PlaceDetails = () => {
                     ))}
                 </ScrollView>
 
-                <FlatList horizontal data={postList?.data} renderItem={({ item }: { item: PostDto }) => renderPostImage({ photo: item.photo })} />
-
-                <Button onPress={handleCreateClick} title="Crear publicacion" />
+                <FlatList
+                    horizontal
+                    data={postList?.data}
+                    renderItem={({ item }: { item: PostDto }) => renderPostImage({ photo: item.photo })}
+                    ListFooterComponent={renderCreatePostImage}
+                />
 
                 <View style={styles.commentsContainer}>
                     <View style={styles.commentHeader}>
