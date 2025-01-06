@@ -9,6 +9,7 @@ import { MapComponent } from "@/components/MapComponent";
 import { useTranslation } from 'react-i18next';
 import { usePostList } from '@/hooks/api/post.hook';
 import { PostDto } from '@/types/post';
+import { ImageCarousel } from '@/components/ImageCarousel';
 
 const { width } = Dimensions.get('window');
 
@@ -31,31 +32,12 @@ const PlaceDetails = () => {
 
     const truncatedDescription = placeDetail.description?.slice(0, 100) + "...";
 
-    const renderCreatePostImage = () => {
-        return (
-            <TouchableOpacity style={{ width: 100, height: 100, backgroundColor: 'lightgray', justifyContent: 'center', alignItems: 'center' }} onPress={handleCreateClick}>
-                <Ionicons name='add' size={48} />
-            </TouchableOpacity>
-        )
-    }
-
     const handleCreateClick = () => {
         router.push({
             pathname: "/(auth)/create-post/[id]",
             params: { id }
         })
     }
-
-    const renderPostImage = ({ photo }: { photo: string }) => {
-        return (
-            <Image
-                source={{ uri: photo }}
-                style={{ width: 100, height: 100 }}
-                onLoad={() => <View style={{ width: 100, height: 100, backgroundColor: 'gray' }} />}
-            />
-        )
-    }
-
 
     return (
         <ScrollView style={styles.container}>
@@ -97,22 +79,9 @@ const PlaceDetails = () => {
                 </View>
 
                 <Text style={styles.sectionTitle}>Fotos</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoScroll}>
-                    {[1, 2, 3, 4, 5].map((item) => (
-                        <Image
-                            key={item}
-                            source={{ uri: `https://source.unsplash.com/random/800x600?nightclub&sig=${item}` }}
-                            style={styles.photo}
-                        />
-                    ))}
-                </ScrollView>
 
-                <FlatList
-                    horizontal
-                    data={postList?.data}
-                    renderItem={({ item }: { item: PostDto }) => renderPostImage({ photo: item.photo })}
-                    ListFooterComponent={renderCreatePostImage}
-                />
+
+                <ImageCarousel posts={postList?.data} onAddPress={handleCreateClick} />
 
                 <View style={styles.commentsContainer}>
                     <View style={styles.commentHeader}>
