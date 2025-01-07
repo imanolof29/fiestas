@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LocationProvider } from '@/provider/LocationProvider';
 import * as Notifications from 'expo-notifications';
 import { NotificationProvider } from '@/provider/NotificationProvider';
+import Toast from "react-native-toast-message";
 import '@/i18n';
 
 const queryClient = new QueryClient()
@@ -135,6 +136,7 @@ const RootLayoutNav = () => {
         <LocationProvider>
           <QueryClientProvider client={queryClient}>
             <InitialLayout />
+            <Toast />
           </QueryClientProvider>
         </LocationProvider>
       </NotificationProvider>
