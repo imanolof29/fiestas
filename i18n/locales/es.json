@@ -1,0 +1,58 @@
+{
+  "auth": {
+    "login": {
+      "title": "Inicia sesion en tu cuenta",
+      "email": "Email",
+      "password": "Contraseña",
+      "orSignIn": "O inicia sesión con",
+      "forgotPassword": "¿Olvidaste tu constraseña?",
+      "dontHaveAccount": "¿No tienes cuenta?",
+      "google": "Google",
+      "register": "Registrate",
+      "signin": "Iniciar sesión",
+      "signup": "Crear cuenta"
+    }
+  },
+  "tabs": {
+    "home": {
+      "title": "Home",
+      "showing": "Mostrando a {{km}}km de tu ubicación"
+    },
+    "map": {
+      "title": "Mapa"
+    },
+    "tickets": {
+      "title": "Entradas",
+      "purchases": "Mis compras"
+    },
+    "profile": {
+      "title": "Perfil",
+      "notifications": "Notificaciones",
+      "theme": "Tema",
+      "language": "Idioma",
+      "helpCenter": "Help Center",
+      "termsAndConditions": "Términos y condiciones",
+      "logout": "Cerrar sesión"
+    }
+  },
+  "placeDetail": {
+    "about": "Acerca de",
+    "readMore": "Leer mas",
+    "location": "Ubicación",
+    "photos": "Fotos",
+    "comments": "Comentarios",
+    "seeAll": "Ver todos",
+    "noComments": "Aun no hay comentarios..."
+  },
+  "comments": {
+    "title": "Comentarops",
+    "write": "Escribe un comentario...",
+    "ago": "Hace"
+  },
+  "filter": {
+    "title": "Filtrar",
+    "subtitle": "Filtrar por distancia",
+    "distance": "Distancia: {{km}}km",
+    "apply": "Aplicar filtros"
+  }
+}

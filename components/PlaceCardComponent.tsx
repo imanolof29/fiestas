@@ -1,34 +1,39 @@
+import { PlaceDto } from "@/types/place";
 import { Link } from "expo-router";
 import { Clock, MapPin, Music, Star } from "lucide-react-native";
 import { TouchableOpacity, StyleSheet, View, Image, Text } from "react-native";
 
-export const PlaceCard = ({ disco }: any) => (
-    <Link href={`/(auth)/place-details/1`} asChild>
+type PlaceCardProperties = {
+    place: PlaceDto
+}
+
+export const PlaceCard = (properties: PlaceCardProperties) => (
+    <Link href={`/(auth)/place-details/${properties.place.id}`} key={properties.place.id} asChild>
         <TouchableOpacity style={styles.discoCard}>
-            <Image source={{ uri: disco.image }} style={styles.discoImage} />
+            <Image source={{ uri: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60' }} style={styles.discoImage} />
             <View style={styles.discoInfo}>
                 <View style={styles.discoHeader}>
-                    <Text style={styles.discoName}>{disco.name}</Text>
+                    <Text style={styles.discoName}>{properties.place.name}</Text>
                     <View style={styles.ratingContainer}>
                         <Star size={16} color="#FF5A36" fill="#FF5A36" />
-                        <Text style={styles.ratingText}>{disco.rating}</Text>
+                        <Text style={styles.ratingText}>{"4.6"}</Text>
                     </View>
                 </View>
                 <View style={styles.discoDetails}>
                     <MapPin size={16} color="#666" />
-                    <Text style={styles.discoAddress}>{disco.address}</Text>
+                    <Text style={styles.discoAddress}>{properties.place.city}</Text>
                 </View>
                 <View style={styles.discoFeatures}>
                     <View style={styles.feature}>
                         <Clock size={14} color="#666" />
-                        <Text style={styles.featureText}>{disco.openHours}</Text>
+                        <Text style={styles.featureText}>{"00:00 - 06:30"}</Text>
                     </View>
                     <View style={styles.feature}>
                         <Music size={14} color="#666" />
-                        <Text style={styles.featureText}>{disco.musicType}</Text>
+                        <Text style={styles.featureText}>{"Electronic / Techno"}</Text>
                     </View>
                     <View style={styles.feature}>
-                        <Text style={styles.featureText}>{disco.price}</Text>
+                        <Text style={styles.featureText}>{"€€€"}</Text>
                     </View>
                 </View>
             </View>

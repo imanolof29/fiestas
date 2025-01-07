@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, SafeAreaView, Switch } from 'react-native';
 import { Camera, ChevronRight, Bell, Moon, HelpCircle, FileText, LogOut } from 'lucide-react-native';
-import { CustomButton } from '@/components/ButtonComponent';
-import { CustomInput } from '@/components/InputComponent';
+import * as ImagePicker from 'expo-image-picker';
+import { useAuth } from '@/provider/AuthProvider';
+import axiosInstance from '@/api';
+import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 type IconProps = {
     size: number;
     color: string;
 };
+
+interface ImageAsset {
+    uri: string;
+    type: string;
+    fileName?: string;
+}
 
 type ProfileOptionProps = {
     icon: React.ComponentType<IconProps>;
@@ -45,16 +54,56 @@ const ProfileOption: React.FC<ProfileOptionProps> = ({
 
 
 export default function ProfileScreen() {
+
+    const { t } = useTranslation()
+
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
-    const handleLogout = () => {
-        // Implement logout logic here
+    const { session, logout } = useAuth()
+
+    const pickImage = async (): Promise<void> => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1
+        });
+
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+            const selectedPhoto = result.assets[0];
+            await uploadPhoto({
+                uri: selectedPhoto.uri,
+                type: selectedPhoto.type || 'image/jpeg',
+                fileName: selectedPhoto.fileName || 'profile.jpg',
+            });
+        }
     };
 
-    const handleUpdatePhoto = () => {
-        console.log('Update photo');
+    const uploadPhoto = async (photo: ImageAsset): Promise<void> => {
+        const formData = new FormData();
+        formData.append('file', {
+            uri: photo.uri,
+            type: photo.type,
+            name: photo.fileName,
+        } as any);
+
+        try {
+            const response = await axiosInstance.post(`/users/profile-picture`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('Imagen subida con éxito:', response.data);
+        } catch (error) {
+            console.error('Error al subir la imagen:', error);
+        }
     };
+
+    const handleLogout = () => {
+        logout()
+    };
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -68,28 +117,34 @@ export default function ProfileScreen() {
                         source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
                         style={styles.profileImage}
                     />
-                    <TouchableOpacity style={styles.cameraButton} onPress={handleUpdatePhoto}>
+                    <TouchableOpacity style={styles.cameraButton} onPress={async () => pickImage()}>
                         <Camera size={24} color="#FFF" />
                     </TouchableOpacity>
+                </View>
+
+                <View style={{ flex: 1, alignItems: "center", paddingVertical: 20 }}>
+                    <Text>{session?.email}</Text>
                 </View>
 
                 <View style={styles.optionsContainer}>
                     <ProfileOption
                         icon={Bell as any}
-                        label="Notifications"
+                        label={t('tabs.profile.notifications')}
                         showToggle={true}
                         toggleValue={notificationsEnabled}
                         onToggle={setNotificationsEnabled} onPress={() => { }} />
                     <ProfileOption
                         icon={Moon as any}
-                        label="Dark Mode"
+                        label={t('tabs.profile.theme')}
                         showToggle={true}
                         toggleValue={darkModeEnabled}
                         onToggle={setDarkModeEnabled} onPress={() => { }} />
                     <ProfileOption
                         icon={HelpCircle as any}
-                        label="Help Center"
-                        onPress={() => { }}
+                        label={t('tabs.profile.language')}
+                        onPress={() => {
+                            router.push("/(auth)/language")
+                        }}
                     />
                     <ProfileOption
                         icon={FileText as any}

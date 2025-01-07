@@ -1,74 +1,137 @@
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, Button, FlatList } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
-import { Clock, Music, Star } from "lucide-react-native";
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Linking } from "react-native"
-import MapView, { Marker } from "react-native-maps";
+import { Clock, Music, Star, DollarSign, Users, Camera } from "lucide-react-native";
+import { usePlaceDetail } from "@/hooks/api/place.hook";
+import { useCommentList } from "@/hooks/api/comment.hook";
+import { MapComponent } from "@/components/MapComponent";
+import { useTranslation } from 'react-i18next';
+import { usePostList } from '@/hooks/api/post.hook';
+import { PostDto } from '@/types/post';
+import { ImageCarousel } from '@/components/ImageCarousel';
+
+const { width } = Dimensions.get('window');
 
 const PlaceDetails = () => {
+    const { t } = useTranslation()
+    const router = useRouter();
+    const { id } = useLocalSearchParams<{ id: string }>();
+    const { data: placeDetail, isLoading: isPlaceLoading } = usePlaceDetail(id);
+    const { data: commentList, isLoading: isCommentListLoading } = useCommentList(id);
+    const { data: postList, isLoading: isPostListLoading } = usePostList(id)
+    const [showFullDescription, setShowFullDescription] = useState(false);
 
-    const navigation = useNavigation()
+    if (isPlaceLoading || !placeDetail) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#FF5A36" />
+            </View>
+        );
+    }
 
-    const comments = [
-        { id: 1, author: 'Juan Pérez', text: '¡Gran ambiente! Música increíble y atención excelente.', date: '2024-11-10' },
-        { id: 2, author: 'Maria López', text: 'La pista de baile es muy grande, pero podría mejorar la acústica.', date: '2024-11-12' },
-        { id: 3, author: 'Carlos García', text: 'Recomiendo las horas después de medianoche, el ambiente se vuelve mucho mejor.', date: '2024-11-14' },
-    ];
+    const truncatedDescription = placeDetail.description?.slice(0, 100) + "...";
+
+    const handleCreateClick = () => {
+        router.push({
+            pathname: "/(auth)/create-post/[id]",
+            params: { id }
+        })
+    }
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.headerImageContainer}>
                 <Image source={{ uri: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60' }} style={styles.headerImage} />
-                <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => { navigation.goBack(); }}
-                >
-                    <Ionicons name="arrow-back" size={24} color="white" />
-                </TouchableOpacity>
+                <View style={styles.imageOverlay}>
+                    <Text style={styles.overlayText}>{placeDetail.name}</Text>
+                    <Text style={styles.overlaySubtext}>{placeDetail.city}</Text>
+                </View>
             </View>
-            <ScrollView contentContainerStyle={styles.detailsContainer}>
-                <Text style={styles.title}>{'Fever Club Bilbao'}</Text>
-                <Text style={styles.subtitle}>{'Calle Particular de Allende 2, Bilbao'}</Text>
+
+            <View style={styles.detailsContainer}>
                 <View style={styles.infoContainer}>
                     <View style={styles.ratingContainer}>
-                        <Star size={16} color="#FF5A36" fill="#FF5A36" />
-                        <Text style={styles.ratingText}>Rating: {"4.8"}</Text>
+                        <Star size={20} color="#FF5A36" fill="#FF5A36" />
+                        <Text style={styles.ratingText}>4.8 (234 reviews)</Text>
                     </View>
                     <View style={styles.featuresContainer}>
-                        <View style={styles.feature}>
-                            <Clock size={16} color="#666" />
-                            <Text style={styles.featureText}>{'23:30 - 06:00'}</Text>
-                        </View>
-                        <View style={styles.feature}>
-                            <Music size={16} color="#666" />
-                            <Text style={styles.featureText}>{'House / EDM'}</Text>
-                        </View>
+                        <FeatureItem icon={<Clock size={16} color="#666" />} text="23:30 - 06:00" />
+                        <FeatureItem icon={<Music size={16} color="#666" />} text="House / EDM" />
+                        <FeatureItem icon={<DollarSign size={16} color="#666" />} text="$$$" />
+                        <FeatureItem icon={<Users size={16} color="#666" />} text="500+ capacity" />
                     </View>
                 </View>
+
+                <Text style={styles.sectionTitle}>{t('placeDetail.about')}</Text>
+                <Text style={styles.description}>
+                    {showFullDescription ? placeDetail.description : truncatedDescription}
+                </Text>
+                {!showFullDescription && (
+                    <TouchableOpacity onPress={() => setShowFullDescription(true)}>
+                        <Text style={styles.readMore}>{t('placeDetail.readMore')}</Text>
+                    </TouchableOpacity>
+                )}
+
+                <Text style={styles.sectionTitle}>{t('placeDetail.location')}</Text>
+                <View style={styles.mapContainer}>
+                    <MapComponent lat={placeDetail.position.coordinates[0]} lon={placeDetail.position.coordinates[1]} />
+                </View>
+
+                <Text style={styles.sectionTitle}>Fotos</Text>
+
+
+                <ImageCarousel posts={postList?.data} onAddPress={handleCreateClick} />
+
                 <View style={styles.commentsContainer}>
-                    <Text style={styles.commentsTitle}>Comentarios</Text>
-                    {comments.length > 0 ? (
-                        comments.map((comment) => (
+                    <View style={styles.commentHeader}>
+                        <Text style={styles.sectionTitle}>{t('placeDetail.photos')}</Text>
+                        <TouchableOpacity
+                            style={styles.viewAllButton}
+                            onPress={() => router.push({
+                                pathname: "/(auth)/(modals)/comments/[id]",
+                                params: { id }
+                            })}
+                        >
+                            <Text style={styles.viewAllText}>Ver todos</Text>
+                            <Ionicons name="arrow-forward" size={16} color="#FF5A36" />
+                        </TouchableOpacity>
+                    </View>
+                    {isCommentListLoading ? (
+                        <ActivityIndicator size="small" color="#FF5A36" />
+                    ) : commentList && commentList.data.length > 0 ? (
+                        commentList.data.slice(0, 2).map((comment) => (
                             <View key={comment.id} style={styles.comment}>
-                                <Text style={styles.commentAuthor}>{comment.author}</Text>
-                                <Text style={styles.commentDate}>{comment.date}</Text>
-                                <Text style={styles.commentText}>{comment.text}</Text>
+                                <Text style={styles.commentAuthor}>{comment.user.username}</Text>
+                                <Text style={styles.commentDate}>{new Date(comment.created).toLocaleDateString()}</Text>
+                                <Text style={styles.commentText}>{comment.content}</Text>
                             </View>
                         ))
                     ) : (
-                        <Text style={styles.noComments}>No hay comentarios aún.</Text>
+                        <Text style={styles.noComments}>{t('placeDetail.noComments')}</Text>
                     )}
                 </View>
-            </ScrollView>
-        </View>
+            </View>
+        </ScrollView>
     );
 }
 
-export default PlaceDetails
+const FeatureItem = ({ icon, text }: { icon: any, text: string }) => (
+    <View style={styles.feature}>
+        {icon}
+        <Text style={styles.featureText}>{text}</Text>
+    </View>
+);
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     headerImageContainer: {
         width: '100%',
@@ -83,74 +146,113 @@ const styles = StyleSheet.create({
     backButton: {
         position: 'absolute',
         top: 40,
-        left: 16,
-        zIndex: 1,
+        left: 20,
+        zIndex: 10,
+    },
+    imageOverlay: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        padding: 16,
+    },
+    overlayText: {
+        color: 'white',
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    overlaySubtext: {
+        color: 'white',
+        fontSize: 16,
     },
     detailsContainer: {
         padding: 16,
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 8,
-    },
-    subtitle: {
-        fontSize: 16,
-        color: '#666',
-        marginBottom: 16,
-    },
-    map: {
-        width: '100%',
-        height: 250,
-        marginBottom: 16,
-    },
     infoContainer: {
-        marginBottom: 16,
+        marginBottom: 24,
     },
     ratingContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 4,
-        marginBottom: 8,
+        marginBottom: 16,
     },
     ratingText: {
         fontSize: 16,
         fontWeight: '600',
         color: '#FF5A36',
+        marginLeft: 8,
     },
     featuresContainer: {
-        marginTop: 16,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
     },
     feature: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 8,
+        width: '48%',
+        marginBottom: 12,
     },
     featureText: {
         fontSize: 14,
         color: '#666',
         marginLeft: 8,
     },
-    button: {
-        backgroundColor: '#FF5A36',
-        paddingVertical: 12,
-        borderRadius: 4,
-        marginTop: 16,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    commentsContainer: {
-        marginTop: 24,
-        marginBottom: 16,
-    },
-    commentsTitle: {
+    sectionTitle: {
         fontSize: 18,
         fontWeight: '600',
         marginBottom: 12,
+    },
+    description: {
+        fontSize: 14,
+        color: '#333',
+        lineHeight: 20,
+        marginBottom: 8,
+    },
+    readMore: {
+        color: '#FF5A36',
+        fontWeight: '600',
+    },
+    mapContainer: {
+        marginBottom: 24,
+    },
+    addressContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    addressText: {
+        fontSize: 14,
+        color: '#666',
+        marginLeft: 8,
+    },
+    photoScroll: {
+        marginBottom: 24,
+    },
+    photo: {
+        width: width * 0.7,
+        height: 200,
+        borderRadius: 8,
+        marginRight: 12,
+    },
+    commentsContainer: {
+        marginBottom: 24,
+    },
+    commentHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+    viewAllButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    viewAllText: {
+        color: '#FF5A36',
+        fontWeight: '600',
+        marginRight: 4,
     },
     comment: {
         marginBottom: 16,
@@ -173,3 +275,6 @@ const styles = StyleSheet.create({
         color: '#666',
     },
 });
+
+export default PlaceDetails;
+

@@ -1,134 +1,120 @@
+
 import { Header } from '@/components/Header';
 import { PlaceCard } from '@/components/PlaceCardComponent';
 import { PlaceCardLoadingComponent } from '@/components/PlaceCardLoadingComponent';
-import { FlatList, View, StyleSheet } from 'react-native';
-
-const discos = [
-  {
-    id: '1',
-    name: 'Fever Club Bilbao',
-    address: 'Calle Particular de Allende 2, Bilbao',
-    rating: 4.8,
-    image: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60',
-    latitude: 43.2630,
-    longitude: -2.9350,
-    price: '€€',
-    musicType: 'House / EDM',
-    openHours: '23:30 - 06:00'
-  },
-  {
-    id: '2',
-    name: 'Sonora Donostia',
-    address: 'Reyes Católicos 11, San Sebastián',
-    rating: 4.5,
-    image: 'https://images.unsplash.com/photo-1581974944026-5d6ed762f617?auto=format&fit=crop&w=500&q=60',
-    latitude: 43.3183,
-    longitude: -1.9812,
-    price: '€€',
-    musicType: 'Pop / Urban',
-    openHours: '00:00 - 06:30'
-  },
-  {
-    id: '3',
-    name: 'Kutxa Vitoria',
-    address: 'Calle Eduardo Dato 31, Vitoria-Gasteiz',
-    rating: 4.6,
-    image: 'https://images.unsplash.com/photo-1571204829887-3b8d69e4094d?auto=format&fit=crop&w=500&q=60',
-    latitude: 42.8467,
-    longitude: -2.6716,
-    price: '€€€',
-    musicType: 'Techno / Electronic',
-    openHours: '23:00 - 07:00'
-  },
-  {
-    id: '4',
-    name: 'Shake Bilbao',
-    address: 'Licenciado Poza 43, Bilbao',
-    rating: 4.7,
-    image: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60',
-    latitude: 43.2627,
-    longitude: -2.9388,
-    price: '€€',
-    musicType: 'Commercial / Urban',
-    openHours: '00:00 - 05:30'
-  },
-  {
-    id: '5',
-    name: 'Bataplan Donostia',
-    address: 'Paseo de la Concha 3, San Sebastián',
-    rating: 4.8,
-    image: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60',
-    latitude: 43.3125,
-    longitude: -1.9864,
-    price: '€€€',
-    musicType: 'Electro / House',
-    openHours: '23:30 - 06:00'
-  },
-  {
-    id: '6',
-    name: 'Drow Vitoria',
-    address: 'Calle San Prudencio 18, Vitoria-Gasteiz',
-    rating: 4.5,
-    image: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60',
-    latitude: 42.8475,
-    longitude: -2.6722,
-    price: '€€',
-    musicType: 'Reggaeton / Urban',
-    openHours: '00:00 - 05:30'
-  },
-  {
-    id: '7',
-    name: 'Tiffanys Barakaldo',
-    address: 'Calle Gernikako Arbola 14, Barakaldo',
-    rating: 4.4,
-    image: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60',
-    latitude: 43.2956,
-    longitude: -2.9977,
-    price: '€€',
-    musicType: 'House / Pop',
-    openHours: '23:00 - 06:00'
-  },
-  {
-    id: '8',
-    name: 'New Gastes',
-    address: 'Calle Portal de Castilla 62, Vitoria-Gasteiz',
-    rating: 4.6,
-    image: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=60',
-    latitude: 42.8439,
-    longitude: -2.6780,
-    price: '€€€',
-    musicType: 'Electronic / Techno',
-    openHours: '00:00 - 06:30'
-  }
-];
+import { usePlaceList } from '@/hooks/api/place.hook';
+import { useLocation } from '@/provider/LocationProvider';
+import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, View, StatusBar, Text, SafeAreaView, Platform } from 'react-native';
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const { location, radius, getCurrentLocation } = useLocation();
 
-  const LoadingView = () => {
-    return (
-      <View style={styles.container}>
-        {new Array(5).fill(null).map(() => <PlaceCardLoadingComponent />)}
-      </View>
-    )
+  const { t } = useTranslation()
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, [radius]);
+
+  const { data, isLoading, error, hasNextPage, fetchNextPage } = usePlaceList(
+    location?.coords.latitude ?? 0,
+    location?.coords.longitude ?? 0,
+    radius
+  );
+
+  const handleOpenPress = () => {
+    router.push({
+      pathname: "/(auth)/(modals)/filter"
+    });
+  };
+
+  const handleSearchPress = () => {
+    router.push({
+      pathname: "/(auth)/search"
+    });
   }
+
+  const handleLoadMore = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const LoadingView: React.FC = () => (
+    <View style={{ flex: 1 }}>
+      {new Array(5).fill(null).map((_, index) => (
+        <PlaceCardLoadingComponent key={index} />
+      ))}
+    </View>
+  );
+
+  const EmptyResult = () => (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text style={{ fontSize: 16, color: '#666' }}>
+        No se encontraron lugares cercanos en este radio
+      </Text>
+      <Text style={{ fontSize: 14, color: '#999', marginTop: 8 }}>
+        Intenta aumentar el radio de búsqueda
+      </Text>
+    </View>
+  );
+
+  const ErrorView = () => (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text style={{ fontSize: 16, color: '#666' }}>
+        Ha ocurrido un error al cargar los lugares
+      </Text>
+      <Text style={{ fontSize: 14, color: '#999', marginTop: 8 }}>
+        Por favor, intenta nuevamente más tarde
+      </Text>
+    </View>
+  );
+
+  const renderContent = () => {
+    if (isLoading) {
+      return <LoadingView />;
+    }
+
+    if (error) {
+      return <ErrorView />;
+    }
+
+    if (!data || data.pages.flatMap(page => page.data).length === 0) {
+      return <EmptyResult />;
+    }
+
+    return (
+      <FlatList
+        data={data.pages.flatMap(page => page.data)}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <PlaceCard place={item} />}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+      />
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
-      <Header />
-      <FlatList
-        data={discos}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => item.id}
-        renderItem={(item) => <PlaceCard disco={item.item} />}
+      <SafeAreaView
+        style={{
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+          backgroundColor: '#111'
+        }}
       />
-      <LoadingView />
+      <Header onSearchClick={handleSearchPress} onFilterClick={handleOpenPress} />
+      {location && (
+        <View style={{ padding: 16 }}>
+          <Text style={{ color: "#333" }}>
+            {t('tabs.home.showing', { km: (radius / 1000).toString() })}
+          </Text>
+        </View>
+      )}
+      {renderContent()}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  }
-})
-
