@@ -157,7 +157,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             return false;
         } catch (error) {
             console.error('Login failed:', error);
-            return false;
+            throw error
         }
     };
 

@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next"
 import { Input } from "@/components/input/Input"
 import { PrimaryButton } from "@/components/button/PrimaryButton"
 import { Ionicons } from "@expo/vector-icons"
+import { showToast } from "@/services/toast/toast.service"
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -39,12 +40,18 @@ const Page = () => {
                 signInWithGoogle(user.data.idToken)
             }
         } catch (e) {
+            showToast({ type: "error", title: "Algo fue mal" })
             console.log(e)
         }
     }
 
-    const handleSubmit = () => {
-        login(email, password)
+    const handleSubmit = async () => {
+        try {
+            await login(email, password)
+        } catch (e) {
+            showToast({ type: "error", title: "Algo fue mal" })
+            throw e
+        }
     }
 
     return (
