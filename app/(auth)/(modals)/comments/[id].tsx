@@ -13,11 +13,12 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCommentList, usePostComment } from '@/hooks/api/comment.hook';
-import { CommentDto } from '@/types/comment';
+
 import { timeSince } from '../../../../utils/ago.utility';
 import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { CommentDto } from '@/dto/comment/comment.dto';
 
 const PostComment = () => {
     const { t } = useTranslation()

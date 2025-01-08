@@ -1,7 +1,7 @@
-import { getPlaceComments, postComment, PostCommentDto } from "@/api/comments"
-import { CommentDto } from "@/types/comment"
+import { getPlaceComments, postComment } from "@/api/comments"
+import { CommentDto } from "@/dto/comment/comment.dto"
+import { CreateCommentDto } from "@/dto/comment/create-comment.dto"
 import { PaginationDto } from "@/types/pagination"
-import { PlaceDto } from "@/types/place"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 
@@ -28,10 +28,10 @@ export const useCommentList = (placeId: string) => {
 
 export const usePostComment = () => {
     const mutation = useMutation({
-        mutationFn: (post: PostCommentDto) => postComment(post)
+        mutationFn: (post: CreateCommentDto) => postComment(post)
     })
 
-    const handleSubmit = (post: PostCommentDto) => {
+    const handleSubmit = (post: CreateCommentDto) => {
         mutation.mutate(post)
     }
 

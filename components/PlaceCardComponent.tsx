@@ -1,4 +1,4 @@
-import { PlaceDto } from "@/types/place";
+import { PlaceDto } from "@/dto/place/place.dto";
 import { Link } from "expo-router";
 import { Clock, MapPin, Music, Star } from "lucide-react-native";
 import { TouchableOpacity, StyleSheet, View, Image, Text } from "react-native";

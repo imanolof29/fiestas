@@ -1,4 +1,4 @@
-import { EventDto } from "@/dto/event/event.dto"
+import { EventDto } from "../event/event.dto"
 
 export interface PurchaseDto {
     id: string

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import axiosInstance from ".."
 import { PaginationDto } from "@/types/pagination"
-import { EventDto } from "@/types/event"
+import { EventDto } from "@/dto/event/event.dto"
 
 export const useEventList = () => {
     return useQuery({

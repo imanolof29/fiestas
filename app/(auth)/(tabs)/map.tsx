@@ -2,10 +2,9 @@ import { useEffect } from "react";
 import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
-
-import { PlaceDto } from "@/types/place";
 import { useLocation } from "@/provider/LocationProvider";
 import { usePlacesList } from "@/hooks/api/place.hook";
+import { PlaceDto } from "@/dto/place/place.dto";
 
 
 export default function FiestaMap() {

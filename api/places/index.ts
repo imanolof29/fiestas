@@ -1,5 +1,5 @@
+import { PlaceDto } from "@/dto/place/place.dto";
 import axiosInstance from ".."
-import { PlaceDto } from "@/types/place"
 import { PaginationDto } from "@/types/pagination";
 
 export const getPlacesByLocation = async (

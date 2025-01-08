@@ -1,4 +1,5 @@
-import { Position } from "./position"
+import { Position } from "../position/position.dto";
+
 
 export interface PlaceDto {
     id: string

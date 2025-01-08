@@ -1,4 +1,4 @@
-export type RegisterDto = {
+export interface RegisterDto {
     firstName: string
     lastName: string
     username: string
