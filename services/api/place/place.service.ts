@@ -1,6 +1,6 @@
-import axiosInstance from "@/api";
 import { PlaceDto } from "@/dto/place/place.dto";
 import { PaginationDto } from "@/types/pagination";
+import axiosInstance from "..";
 
 export const getPlacesByLocation = async (
     page: number = 1,
@@ -18,5 +18,10 @@ export const getPlacesByLocation = async (
             limit
         }
     })
+    return response.data
+}
+
+export const getPlaceDetail = async (id: string): Promise<PlaceDto> => {
+    const response = await axiosInstance.get<PlaceDto>(`place/pick/${id}`)
     return response.data
 }

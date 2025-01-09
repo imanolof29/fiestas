@@ -1,5 +1,5 @@
-import { getPlaceDetail, getPlacesByLocation } from "@/api/places"
 import { PlaceDto } from "@/dto/place/place.dto"
+import { getPlaceDetail, getPlacesByLocation } from "@/services/api/place/place.service"
 import { PaginationDto } from "@/types/pagination"
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { useState } from "react"

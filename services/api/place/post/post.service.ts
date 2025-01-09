@@ -1,8 +1,8 @@
-import axiosInstance from "@/api"
 import { CreatePostDto } from "@/dto/post/create-post.dto"
 import { PostDto } from "@/dto/post/post.dto"
 import { PaginationDto } from "@/types/pagination"
 import { Platform } from "react-native"
+import axiosInstance from "../.."
 
 export const getPlacePost = async (placeId: string) => {
     const response = await axiosInstance.get<PaginationDto<PostDto>>(`/places/${placeId}/posts/find`)

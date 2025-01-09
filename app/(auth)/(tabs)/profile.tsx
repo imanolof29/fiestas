@@ -3,9 +3,9 @@ import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, SafeAreaVi
 import { Camera, ChevronRight, Bell, Moon, HelpCircle, FileText, LogOut } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '@/provider/AuthProvider';
-import axiosInstance from '@/api';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import axiosInstance from '@/services/api';
 
 type IconProps = {
     size: number;

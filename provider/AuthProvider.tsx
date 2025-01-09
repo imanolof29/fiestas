@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react"
 import * as SecureStore from 'expo-secure-store';
-import axiosInstance from "@/api";
 import { jwtDecode } from "jwt-decode";
+import axiosInstance from "@/services/api";
 
 type Session = {
     accessToken: string;

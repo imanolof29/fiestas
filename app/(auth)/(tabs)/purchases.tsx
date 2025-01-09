@@ -1,6 +1,5 @@
 import { usePurchaseList } from "@/hooks/api/purchase.hook";
 import { PurchaseDto } from "@/types/purchase";
-import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, SafeAreaView, Text, TouchableOpacity, View, RefreshControl } from "react-native";

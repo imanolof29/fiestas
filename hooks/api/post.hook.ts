@@ -1,5 +1,5 @@
-import { createPlacePost, getPlacePosts } from "@/api/posts"
 import { CreatePostDto } from "@/dto/post/create-post.dto"
+import { createPlacePost } from "@/services/api/place/post/post.service"
 import { PaginationDto } from "@/types/pagination"
 import { PostDto } from "@/types/post"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -26,10 +26,10 @@ export const usePostList = (placeId: string) => {
 
 }
 
-export const useCreatPlacePost = () => {
+export const useCreatePlacePost = () => {
     const mutation = useMutation({
-        mutationFn: ({ placeId, photo }: CreatePostDto) =>
-            createPlacePost(placeId, photo),
+        mutationFn: (dto: CreatePostDto) =>
+            createPlacePost(dto),
     });
 
     const handleSubmit = (dto: CreatePostDto) => {
@@ -38,4 +38,8 @@ export const useCreatPlacePost = () => {
 
     return { handleSubmit, ...mutation };
 
+}
+
+function getPlacePosts(placeId: string): PaginationDto<PostDto> | Promise<PaginationDto<PostDto>> {
+    throw new Error("Function not implemented.")
 }

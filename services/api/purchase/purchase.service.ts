@@ -1,6 +1,6 @@
-import axiosInstance from "@/api";
 import { PurchaseDto } from "@/dto/purchase/purchase.dto";
 import { PaginationDto } from "@/types/pagination";
+import axiosInstance from "..";
 
 export const getPurchases = async (
     page: number = 1,

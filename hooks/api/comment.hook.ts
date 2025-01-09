@@ -1,6 +1,6 @@
-import { getPlaceComments, postComment } from "@/api/comments"
 import { CommentDto } from "@/dto/comment/comment.dto"
 import { CreateCommentDto } from "@/dto/comment/create-comment.dto"
+import { getPlaceComments, postComment } from "@/services/api/place/comment/comment.service"
 import { PaginationDto } from "@/types/pagination"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
@@ -11,7 +11,7 @@ export const useCommentList = (placeId: string) => {
 
     const query = useQuery<PaginationDto<CommentDto>>({
         queryKey: ["comments", page, limit, placeId],
-        queryFn: () => getPlaceComments(page, limit, placeId),
+        queryFn: () => getPlaceComments({ page, limit, placeId }),
         refetchOnWindowFocus: true,
         refetchOnMount: true
     })

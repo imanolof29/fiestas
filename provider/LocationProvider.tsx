@@ -2,7 +2,8 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import * as Location from 'expo-location';
 import { LocationPermission } from "@/types/location-permission";
 import { Alert } from "react-native";
-import axiosInstance from "@/api";
+import axiosInstance from "@/services/api";
+
 
 interface LocationContextType {
     location: Location.LocationObject | null;

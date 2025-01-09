@@ -1,7 +1,7 @@
-import axiosInstance from "@/api"
 import { CommentDto } from "@/dto/comment/comment.dto"
 import { CreateCommentDto } from "@/dto/comment/create-comment.dto"
 import { PaginationDto } from "@/types/pagination"
+import axiosInstance from "../.."
 
 export const getPlaceComments = async (properties: {
     page: number,

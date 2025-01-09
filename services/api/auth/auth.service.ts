@@ -1,6 +1,6 @@
-import axiosInstance from "@/api";
 import { LoginDto } from "@/dto/auth/login.dto";
 import { RegisterDto } from "@/dto/auth/register.dto";
+import axiosInstance from "..";
 
 export const signInWithEmail = async (dto: LoginDto) => {
     const response = await axiosInstance.post<LoginDto>('auth/login', dto)

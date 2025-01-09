@@ -1,4 +1,4 @@
-import { getPurchaseDetail, getPurchases } from "@/api/purchases"
+import { getPurchaseDetail, getPurchases } from "@/services/api/purchase/purchase.service";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 

@@ -29,7 +29,7 @@ export const Camera = () => {
     }
 
     const createPost = () => {
-        
+
     }
 
     const handleTakePhoto = async () => {
@@ -47,7 +47,7 @@ export const Camera = () => {
 
     const handleRetakePhoto = () => setPhoto(null);
 
-    if (photo) return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto} />
+    if (photo) return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto} handleSend={() => { }} />
 
     return (
         <View style={styles.container}>

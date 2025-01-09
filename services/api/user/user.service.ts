@@ -1,4 +1,4 @@
-import axiosInstance from "@/api"
+import axiosInstance from ".."
 
 export const uploadUserProfileImage = async (file: Blob) => {
     const formdata = new FormData()

@@ -1,6 +1,6 @@
-import axiosInstance from "@/api"
 import { EventDto } from "@/dto/event/event.dto"
 import { PaginationDto } from "@/types/pagination"
+import axiosInstance from ".."
 
 export const getEvents = async () => {
     const response = await axiosInstance.get<PaginationDto<EventDto>>("/events/find")
