@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from "react"
 import { View, StyleSheet, Text, Button, TouchableOpacity, Alert } from "react-native"
 
 import { Ionicons } from "@expo/vector-icons"
-import { useCreatPlacePost } from "@/hooks/api/post.hook"
+
 import { PhotoPreview } from "@/components/camera/PhotoPreview"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { showToast } from "@/services/toast/toast.service"
+import { useCreatePlacePost } from "@/hooks/api/post.hook"
 
 const Page = () => {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -17,7 +18,7 @@ const Page = () => {
 
     const navigation = useRouter()
 
-    const { handleSubmit, error } = useCreatPlacePost()
+    const { handleSubmit, error } = useCreatePlacePost()
 
     useEffect(() => {
         if (error) {
