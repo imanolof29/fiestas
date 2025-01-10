@@ -22,6 +22,6 @@ export const getPlacesByLocation = async (
 }
 
 export const getPlaceDetail = async (id: string): Promise<PlaceDto> => {
-    const response = await axiosInstance.get<PlaceDto>(`place/pick/${id}`)
+    const response = await axiosInstance.get<PlaceDto>(`places/pick/${id}`)
     return response.data
 }

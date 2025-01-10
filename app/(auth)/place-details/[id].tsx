@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, Button, FlatList } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Clock, Music, Star, DollarSign, Users, Camera } from "lucide-react-native";
@@ -8,7 +8,6 @@ import { useCommentList } from "@/hooks/api/comment.hook";
 import { MapComponent } from "@/components/MapComponent";
 import { useTranslation } from 'react-i18next';
 import { usePostList } from '@/hooks/api/post.hook';
-import { PostDto } from '@/types/post';
 import { ImageCarousel } from '@/components/ImageCarousel';
 
 const { width } = Dimensions.get('window');
