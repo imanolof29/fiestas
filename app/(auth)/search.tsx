@@ -1,18 +1,35 @@
 import { useRouter } from "expo-router"
 import { ArrowLeft, Search } from "lucide-react-native"
-import { useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { View, StyleSheet, SafeAreaView, TouchableOpacity, TextInput } from "react-native"
+import { FlatList } from "react-native-gesture-handler"
 
 const Page = () => {
 
     const [searchQuery, setSearchQuery] = useState('')
 
+    const timeoutRef = useRef<any>(null)
+
     const navigation = useRouter()
+
+    const handleClosePress = useCallback(() => {
+        navigation.back()
+    }, [])
+
+    const handleSearch = useCallback((text: string) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
+        timeoutRef.current = setTimeout(() => {
+            console.log("Searching")
+            console.log(text)
+        }, 300)
+    }, [])
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.searchContainer}>
-                <TouchableOpacity onPress={() => navigation.back()}>
+                <TouchableOpacity onPress={handleClosePress}>
                     <ArrowLeft size={24} color="#FFF" />
                 </TouchableOpacity>
                 <TextInput
@@ -20,7 +37,7 @@ const Page = () => {
                     placeholder="Buscar cerca de ti"
                     placeholderTextColor="#999"
                     value={searchQuery}
-                    onChangeText={setSearchQuery}
+                    onChangeText={handleSearch}
                     autoFocus
                 />
                 <Search size={24} color="#FFF" />

@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocation } from "@/provider/LocationProvider";
 import { usePlacesList } from "@/hooks/api/place.hook";
 import { PlaceDto } from "@/dto/place/place.dto";
+import { StatusBar } from "expo-status-bar";
 
 
 export default function FiestaMap() {
@@ -64,6 +65,7 @@ export default function FiestaMap() {
             ) : (
                 <Text>Waiting for location...</Text>
             )}
+            <StatusBar style="dark" />
         </View>
     );
 }

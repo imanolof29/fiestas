@@ -8,6 +8,7 @@ import { Input } from "@/components/input/Input"
 import { PrimaryButton } from "@/components/button/PrimaryButton"
 import { Ionicons } from "@expo/vector-icons"
 import { showToast } from "@/services/toast/toast.service"
+import { StatusBar } from "expo-status-bar"
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -114,6 +115,7 @@ const Page = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+            <StatusBar style="light" />
         </View>
     )
 }

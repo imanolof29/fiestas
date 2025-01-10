@@ -5,9 +5,10 @@ import { PlaceCardLoadingComponent } from '@/components/PlaceCardLoadingComponen
 import { usePlaceList } from '@/hooks/api/place.hook';
 import { useLocation } from '@/provider/LocationProvider';
 import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, View, StatusBar, Text, SafeAreaView, Platform } from 'react-native';
+import { FlatList, View, Text, SafeAreaView, Platform } from 'react-native';
 
 export default function HomeScreen() {
   const router = useRouter();

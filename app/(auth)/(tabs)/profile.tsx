@@ -6,6 +6,7 @@ import { useAuth } from '@/provider/AuthProvider';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import axiosInstance from '@/services/api';
+import { StatusBar } from 'expo-status-bar';
 
 type IconProps = {
     size: number;
@@ -158,6 +159,7 @@ export default function ProfileScreen() {
                     />
                 </View>
             </ScrollView>
+            <StatusBar style="dark" />
         </SafeAreaView>
     );
 };
